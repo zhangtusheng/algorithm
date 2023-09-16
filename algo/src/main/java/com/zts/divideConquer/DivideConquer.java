@@ -18,6 +18,17 @@ public class DivideConquer {
 
 	}
 
+
+	/**
+	 * 数组中的逆序对
+	 * https://leetcode.cn/leetbook/read/illustration-of-algorithm/o58jfs/
+	 * @param nums
+	 * @return
+	 */
+	public int reversePairs(int[] nums) {
+
+	}
+
 	/**
 	 *  二叉搜索树的后序遍历序列
 	 * https://leetcode.cn/leetbook/read/illustration-of-algorithm/5vwxx5/
