@@ -26,6 +26,7 @@ public class Main0911 {
         System.out.println(main0911.distMoney(24, 2));
     }
 
+
     public int distMoney(int money, int children) {
         if (money < children) {
             return -1;
