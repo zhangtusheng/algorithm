@@ -13,13 +13,68 @@ public class Main0911 {
 
     public static void main(String[] args) {
         Main0911 main0911 = new Main0911();
-        TreeNode root = new TreeNode(3);
-        root.left = new TreeNode(4);
-        root.right = new TreeNode(5);
-        root.left.left = new TreeNode(1);
-        root.left.right = new TreeNode(3);
-        root.right.right = new TreeNode(1);
-        System.out.println(main0911.rob(root));
+//        TreeNode root = new TreeNode(3);
+//        root.left = new TreeNode(4);
+//        root.right = new TreeNode(5);
+//        root.left.left = new TreeNode(1);
+//        root.left.right = new TreeNode(3);
+//        root.right.right = new TreeNode(1);
+//        System.out.println(main0911.rob(root));
+
+       // System.out.println(main0911.minCapability(new int[]{2,3,5,9}, 2));
+        //System.out.println(main0911.minCount(new int[]{2, 3, 10}));
+        System.out.println(main0911.distMoney(24, 2));
+    }
+
+    public int distMoney(int money, int children) {
+        if (money < children) {
+            return -1;
+        }
+        if (money < 8 + children - 1) {
+            return 0;
+        }
+
+        // 贪心算法。默认都取8先，如果最后的值为4的话，
+        int t = money % 8;
+        int n = money / 8;
+        // 分情况讨论
+        if (n == children && t == 0) {
+            return n;
+        } else if (n < children) {
+            if (n + 1 == children && t == 4) {
+                return n-1;
+            } else {
+                int i = 1;
+                if (t >= (children - n)) {
+                    return n;
+                }
+                n--;
+                while ( i * 8 + n + t < children) {
+                    i++;
+                    n--;
+                }
+                return n;
+            }
+        } else {
+            return children - 1;
+        }
+    }
+
+    /**
+     * https://leetcode.cn/problems/na-ying-bi/?envType=daily-question&envId=2023-09-20
+     * @param coins
+     * @return
+     */
+    public int minCount(int[] coins) {
+        int ans = 0;
+        for (int coin : coins) {
+            if (coin % 2 != 0) {
+                ans = ans + 1 + coin /2;
+            } else {
+                ans = ans + coin / 2;
+            }
+        }
+        return ans;
     }
 
     /**
@@ -29,7 +84,27 @@ public class Main0911 {
      * @return
      */
     public int minCapability(int[] nums, int k) {
-        return 0;
+        int lower = Arrays.stream(nums).min().getAsInt();
+        int upper = Arrays.stream(nums).max().getAsInt();
+        while (lower <= upper) {
+            int middle = (lower + upper) / 2;
+            int count = 0;
+            boolean visited = false;
+            for (int x : nums) {
+                if (x <= middle && !visited) {
+                    count++;
+                    visited = true;
+                } else {
+                    visited = false;
+                }
+            }
+            if (count >= k) {
+                upper = middle - 1;
+            } else {
+                lower = middle + 1;
+            }
+        }
+        return lower;
     }
 
 
