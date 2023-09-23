@@ -27,6 +27,12 @@ public class Main0911 {
     }
 
 
+    /**
+     * https://leetcode.cn/problems/distribute-money-to-maximum-children/?envType=daily-question&envId=2023-09-23
+     * @param money
+     * @param children
+     * @return
+     */
     public int distMoney(int money, int children) {
         if (money < children) {
             return -1;
