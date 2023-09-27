@@ -26,7 +26,7 @@ public class DivideConquer {
 	 * @return
 	 */
 	public int reversePairs(int[] nums) {
-
+		return 0;
 	}
 
 	/**

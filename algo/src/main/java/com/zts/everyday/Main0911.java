@@ -23,7 +23,28 @@ public class Main0911 {
 
        // System.out.println(main0911.minCapability(new int[]{2,3,5,9}, 2));
         //System.out.println(main0911.minCount(new int[]{2, 3, 10}));
-        System.out.println(main0911.distMoney(24, 2));
+        //System.out.println(main0911.distMoney(24, 2));
+        System.out.println(main0911.passThePillow(4, 5));
+        System.out.println(main0911.passThePillow(6, 8));
+        System.out.println(main0911.passThePillow(3, 2));
+        System.out.println(main0911.passThePillow(8, 9));
+    }
+
+
+    /**
+     * https://leetcode.cn/problems/pass-the-pillow/?envType=daily-question&envId=2023-09-26
+     * @param n
+     * @param time
+     * @return
+     */
+    public int passThePillow(int n, int time) {
+        int k = 2 * (n-1);
+        int mod = time % k;
+        if (mod <= n - 1) {
+            return mod + 1;
+        } else {
+            return 2 * n - time -1 ;
+        }
     }
 
 
