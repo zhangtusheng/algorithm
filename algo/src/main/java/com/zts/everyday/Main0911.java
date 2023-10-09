@@ -1,8 +1,8 @@
 package com.zts.everyday;
 
-import com.zts.model.TreeNode;
-
 import java.util.Arrays;
+
+import com.zts.model.TreeNode;
 
 /**
  * @Author zhangtusheng
@@ -24,10 +24,32 @@ public class Main0911 {
        // System.out.println(main0911.minCapability(new int[]{2,3,5,9}, 2));
         //System.out.println(main0911.minCount(new int[]{2, 3, 10}));
         //System.out.println(main0911.distMoney(24, 2));
-        System.out.println(main0911.passThePillow(4, 5));
-        System.out.println(main0911.passThePillow(6, 8));
-        System.out.println(main0911.passThePillow(3, 2));
-        System.out.println(main0911.passThePillow(8, 9));
+//        System.out.println(main0911.passThePillow(4, 5));
+//        System.out.println(main0911.passThePillow(6, 8));
+//        System.out.println(main0911.passThePillow(3, 2));
+//        System.out.println(main0911.passThePillow(8, 9));
+
+        System.out.println(main0911.splitNum(4325));
+    }
+
+    /**
+     * https://leetcode.cn/problems/split-with-minimum-sum/?envType=daily-question&envId=2023-10-09
+     * @param num
+     * @return
+     */
+    public int splitNum(int num) {
+        char[] charArray = String.valueOf(num).toCharArray();
+        Arrays.sort(charArray);
+        StringBuilder nums1 = new StringBuilder();
+        StringBuilder nums2 = new StringBuilder();
+        for (int i = 0; i < charArray.length; i++) {
+            if (i % 2 == 0) {
+                nums1.append(charArray[i]);
+            } else {
+                nums2.append(charArray[i]);
+            }
+        }
+        return Integer.parseInt(nums1.toString()) + Integer.parseInt(nums2.toString());
     }
 
 
