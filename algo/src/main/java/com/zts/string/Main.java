@@ -13,9 +13,44 @@ public class Main {
 		Main main = new Main();
 		//System.out.println(main.wordBreak("leetcode", List.of("cats", "dog", "sand", "and", "cat")));
 		//System.out.println(main.pathEncryption("a.aef.qerf.bb"));
-		System.out.println(main.myAtoi("4193 with words"));
-		System.out.println(main.myAtoi("2147483647"));
-		System.out.println(main.myAtoi("-42"));
+//		System.out.println(main.myAtoi("4193 with words"));
+//		System.out.println(main.myAtoi("2147483647"));
+//		System.out.println(main.myAtoi("-42"));
+		System.out.println(main.validNumber("abc"));
+	}
+
+	/**
+	 * https://leetcode.cn/leetbook/read/illustration-of-algorithm/7f3mmh/
+	 * @param s
+	 * @return
+	 */
+	public boolean validNumber(String s) {
+		boolean head = false;
+		// 分段讨论。
+		s = s.trim();
+		if (s.length() == 0) {
+			return false;
+		}
+		if (s.length() == 1 && (s.charAt(0) == 'e' || s.charAt(0) == 'E')) {
+			return false;
+		}
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (c == '+') {
+				if (head) {
+					return false;
+				}
+			} else if (c == '-') {
+				if (head) {
+					return false;
+				}
+			} else if (c == 'e' || c == 'E') {
+				head = false;
+			} else if ('0' > c || '9' < c) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 
