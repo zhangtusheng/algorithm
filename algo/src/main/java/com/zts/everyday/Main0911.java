@@ -28,8 +28,44 @@ public class Main0911 {
 //        System.out.println(main0911.passThePillow(6, 8));
 //        System.out.println(main0911.passThePillow(3, 2));
 //        System.out.println(main0911.passThePillow(8, 9));
+        System.out.println(main0911.canPlaceFlowers(new int[]{1,0,0,0,1}, 2));
+    }
 
-        System.out.println(main0911.splitNum(4325));
+
+
+
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        int index = 0;
+        int[] newFlowered = new int[flowerbed.length + 1];
+        int length = flowerbed.length;
+        for(int i = 0;i<flowerbed.length;i++) {
+            newFlowered[i] = flowerbed[i];
+        }
+        newFlowered[length] = 1;
+        for(int i =0;i<flowerbed.length;i++) {
+            if (flowerbed[i] == 1) {
+                index = i;
+                break;
+            }
+        }
+
+        if (newFlowered[0] == 0) {
+            index = -1;
+        }
+        int ans = 0;
+        for(int i = index + 1;i<newFlowered.length;i++) {
+            if (newFlowered[i] == 1) {
+                int i1 = i - index - 1;
+                if (i1 != 0 && i1 % 2 == 0) {
+                    ans += (i1-1) % 2;
+                } else {
+                    ans += (i - index - 1) / 2;
+                }
+                index = i;
+            }
+        }
+        return ans >= n;
+
     }
 
     /**
