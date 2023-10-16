@@ -12,7 +12,50 @@ public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
 		//System.out.println(main.wordBreak("leetcode", List.of("cats", "dog", "sand", "and", "cat")));
-		System.out.println(main.pathEncryption("a.aef.qerf.bb"));
+		//System.out.println(main.pathEncryption("a.aef.qerf.bb"));
+		System.out.println(main.myAtoi("4193 with words"));
+		System.out.println(main.myAtoi("2147483647"));
+		System.out.println(main.myAtoi("-42"));
+	}
+
+
+	/**
+	 * https://leetcode.cn/leetbook/read/illustration-of-algorithm/7f8nad/
+	 * @param str
+	 * @return
+	 */
+	public int myAtoi(String str) {
+		int result = 0;
+		str = str.trim();
+		boolean flag = false;
+		if (str.length() == 0 ) {
+			return 0;
+		}
+		if (str.charAt(0) == '-') {
+			flag = true;
+		}
+		int i = flag ? 1: 0;
+		if (str.charAt(0) == '+') {
+			i = 1;
+		}
+		int value = flag ? -1: 1;
+		for(; i < str.length();i++) {
+			char c = str.charAt(i);
+			if ('0'<= c && c<= '9') {
+				long result1 = 10L * result  + ((c - '0') * value);
+				if (flag && result1 <= Long.parseLong(String.valueOf(Integer.MIN_VALUE))) {
+					return Integer.MIN_VALUE;
+				} else if (result1 >= Long.parseLong(String.valueOf(Integer.MAX_VALUE))){
+					return Integer.MAX_VALUE;
+				} else {
+					result = (int) result1;
+
+				}
+			} else {
+				break;
+			}
+		}
+		return result;
 	}
 
 
