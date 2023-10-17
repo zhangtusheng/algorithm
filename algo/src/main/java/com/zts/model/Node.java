@@ -1,7 +1,5 @@
 package com.zts.model;
 
-import java.util.List;
-
 /**
  * @author : zhangtusheng
  * @date : 2022/5/28 2:05 AM
@@ -9,7 +7,8 @@ import java.util.List;
  */
 public class Node {
     public int val;
-    public List<Node> children;
+    public Node left;
+    public Node right;
 
     public Node() {}
 
@@ -17,8 +16,9 @@ public class Node {
         val = _val;
     }
 
-    public Node(int _val, List<Node> _children) {
+    public Node(int _val,Node _left,Node _right) {
         val = _val;
-        children = _children;
+        left = _left;
+        right = _right;
     }
 }

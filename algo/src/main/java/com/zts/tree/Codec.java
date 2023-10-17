@@ -1,8 +1,5 @@
 package com.zts.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zts.model.TreeNode;
 
 /**
@@ -11,32 +8,39 @@ import com.zts.model.TreeNode;
  * @Description
  */
 public class Codec {
-
 	// Encodes a tree to a single string.
+
 	public String serialize(TreeNode root) {
-		StringBuilder result = new StringBuilder();
-		List<TreeNode> list = new ArrayList<>();
-		dfs1(root, list);
-		for (int i = 0; i < list.size(); i++) {
-			TreeNode treeNode = list.get(i);
-
-		}
-		return null;
-
+		return preorderTraversal(root).toString();
 	}
 
-	private void dfs1(TreeNode root, List<TreeNode> list) {
-		if (root == null) {
-			list.add(null);
-			return;
+	StringBuilder preorderTraversal(TreeNode node){
+		StringBuilder sb = new StringBuilder();
+		if(node==null){
+			sb.append("n ");
+			return sb;
 		}
-		list.add(root);
-		dfs1(root.left, list);
-		dfs1(root.right, list);
+		sb.append(node.val);
+		sb.append(" ");
+		sb.append(preorderTraversal(node.left));
+		sb.append(preorderTraversal(node.right));
+		return sb;
 	}
 
 	// Decodes your encoded data to tree.
+	int i=0;
+	String[] ss;
 	public TreeNode deserialize(String data) {
-		return null;
+		ss = data.split(" ");
+		return preorderBuild();
+	}
+	TreeNode preorderBuild(){
+		if(i>=ss.length||"n".equals(ss[i]))return null;
+		TreeNode node = new TreeNode(Integer.parseInt(ss[i]));
+		i++;
+		node.left=preorderBuild();
+		i++;
+		node.right=preorderBuild();
+		return node;
 	}
 }
