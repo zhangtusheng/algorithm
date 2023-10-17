@@ -1,6 +1,9 @@
 package com.zts.string;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * @author zts
@@ -17,6 +20,8 @@ public class Main {
 //		System.out.println(main.myAtoi("2147483647"));
 //		System.out.println(main.myAtoi("-42"));
 		System.out.println(main.validNumber("abc"));
+		System.out.println(main.validNumber("."));
+		System.out.println(main.validNumber("e9"));
 	}
 
 	/**
@@ -25,33 +30,31 @@ public class Main {
 	 * @return
 	 */
 	public boolean validNumber(String s) {
-		boolean head = false;
-		// 分段讨论。
-		s = s.trim();
-		if (s.length() == 0) {
-			return false;
+		Map[] states = {
+				new HashMap<>() {{ put(' ', 0); put('s', 1); put('d', 2); put('.', 4); }}, // 0.
+				new HashMap<>() {{ put('d', 2); put('.', 4); }},                           // 1.
+				new HashMap<>() {{ put('d', 2); put('.', 3); put('e', 5); put(' ', 8); }}, // 2.
+				new HashMap<>() {{ put('d', 3); put('e', 5); put(' ', 8); }},              // 3.
+				new HashMap<>() {{ put('d', 3); }},                                        // 4.
+				new HashMap<>() {{ put('s', 6); put('d', 7); }},                           // 5.
+				new HashMap<>() {{ put('d', 7); }},                                        // 6.
+				new HashMap<>() {{ put('d', 7); put(' ', 8); }},                           // 7.
+				new HashMap<>() {{ put(' ', 8); }}                                         // 8.
+		};
+		int p = 0;
+		char t;
+		for(char c : s.toCharArray()) {
+			if(c >= '0' && c <= '9') t = 'd';
+			else if(c == '+' || c == '-') t = 's';
+			else if(c == 'e' || c == 'E') t = 'e';
+			else if(c == '.' || c == ' ') t = c;
+			else t = '?';
+			if(!states[p].containsKey(t)) return false;
+			p = (int)states[p].get(t);
 		}
-		if (s.length() == 1 && (s.charAt(0) == 'e' || s.charAt(0) == 'E')) {
-			return false;
-		}
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
-			if (c == '+') {
-				if (head) {
-					return false;
-				}
-			} else if (c == '-') {
-				if (head) {
-					return false;
-				}
-			} else if (c == 'e' || c == 'E') {
-				head = false;
-			} else if ('0' > c || '9' < c) {
-				return false;
-			}
-		}
-		return true;
+		return p == 2 || p == 3 || p == 7 || p == 8;
 	}
+
 
 
 	/**
