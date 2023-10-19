@@ -13,6 +13,22 @@ public class Main {
 
 
     /**
+     * https://leetcode.cn/leetbook/read/illustration-of-algorithm/50xofm/
+     * @param stock
+     * @return
+     */
+    public int stockManagement(int[] stock) {
+
+        Integer min = stock[0];
+        for (int i : stock) {
+            min = Math.min(min, i);
+        }
+        return min;
+
+    }
+
+
+    /**
      * https://leetcode.cn/leetbook/read/illustration-of-algorithm/5v76yi/
      * @param plants
      * @param target

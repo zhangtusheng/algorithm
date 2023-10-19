@@ -1,5 +1,6 @@
 package com.zts.divideConquer;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,12 +21,36 @@ public class DivideConquer {
 
 
 	/**
+	 * https://leetcode.cn/leetbook/read/illustration-of-algorithm/lheu7m/
+	 * @param stock
+	 * @param cnt
+	 * @return
+	 */
+	public int[] inventoryManagement(int[] stock, int cnt) {
+		Arrays.sort(stock);
+		return Arrays.copyOfRange(stock, 0, cnt);
+	}
+
+
+	/**
 	 * 数组中的逆序对
 	 * https://leetcode.cn/leetbook/read/illustration-of-algorithm/o58jfs/
 	 * @param nums
 	 * @return
 	 */
 	public int reversePairs(int[] nums) {
+		return 0;
+	}
+
+	private int mergeSort(int i, int j, int[] nums) {
+		if (i == j) {
+			return 0;
+		}
+		if (i == j+1) {
+			int tmp = nums[i];
+			nums[i] = nums[j];
+			nums[j] = tmp;
+		}
 		return 0;
 	}
 
