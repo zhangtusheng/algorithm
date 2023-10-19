@@ -12,8 +12,33 @@ public class Main {
     public static void main(String[] args) {
         Main main = new Main();
         //System.out.println(main.encryptionCalculate(5, -1));
-        System.out.println(JSON.toJSON(main.sockCollocation(new int[]{4, 4, 6, 6, 2, 3})));
+        //System.out.println(JSON.toJSON(main.sockCollocation(new int[]{4, 4, 6, 6, 2, 3})));
+        int a = 1, b = 1, c = 1;
+        System.out.println(a ^ b ^ c);
     }
+
+
+    /**
+     *
+     * @param actions
+     * @return
+     */
+    public int trainingPlan(int[] actions) {
+        int[] counts = new int[32];
+        for(int action : actions) {
+            for(int i = 0; i < 32; i++) {
+                counts[i] += action & 1; // 更新第 i 位 1 的个数之和
+                action >>= 1;            // 第 i 位 --> 第 i 位
+            }
+        }
+        int res = 0, m = 3;
+        for(int i = 31; i >= 0; i--) {
+            res <<= 1;
+            res |= counts[i] % m;        // 恢复第 i 位
+        }
+        return res;
+    }
+
 
 
     /**
