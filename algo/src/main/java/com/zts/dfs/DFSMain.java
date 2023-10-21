@@ -33,7 +33,8 @@ public class DFSMain {
 		for (int candidate : candidates) {
 			map.put(candidate, candidate);
 		}
-		dfs(candidates, target, result);
+		//dfs(candidates, target, result);
+		return result;
 
 	}
 
