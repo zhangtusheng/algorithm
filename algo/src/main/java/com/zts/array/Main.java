@@ -1,9 +1,9 @@
 package com.zts.array;
 
-import com.alibaba.fastjson.JSON;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.fastjson.JSON;
 
 /**
  * @Author zhangtusheng
@@ -15,8 +15,32 @@ public class Main {
     public static void main(String[] args) {
         Main main = new Main();
        // System.out.println(JSON.toJSONString(main.trainingPlan(new int[]{1, 2, 3, 4, 5})));
-        System.out.println(JSON.toJSONString(main.statisticalResult(new int[]{2, 4, 6, 8, 10})));
+        System.out.println(JSON.toJSONString(main.statisticalResult(new int[]{2})));
     }
+
+
+    /**
+     * https://leetcode.cn/leetbook/read/illustration-of-algorithm/7flqdj/
+     * @param array
+     * @return
+     */
+    public int[] spiralArray(int[][] array) {
+        if(array.length == 0) return new int[0];
+        int l = 0, r = array[0].length - 1, t = 0, b = array.length - 1, x = 0;
+        int[] res = new int[(r + 1) * (b + 1)];
+        while(true) {
+            for(int i = l; i <= r; i++) res[x++] = array[t][i]; // left to right
+            if(++t > b) break;
+            for(int i = t; i <= b; i++) res[x++] = array[i][r]; // top to bottom
+            if(l > --r) break;
+            for(int i = r; i >= l; i--) res[x++] = array[b][i]; // right to left
+            if(t > --b) break;
+            for(int i = b; i >= t; i--) res[x++] = array[i][l]; // bottom to top
+            if(++l > r) break;
+        }
+        return res;
+    }
+
 
 
     /**
@@ -26,6 +50,12 @@ public class Main {
      */
     public int[] statisticalResult(int[] arrayA) {
         int length = arrayA.length;
+        if (length == 0) {
+            return new int[0];
+        }
+        if (length == 1){
+            return new int[]{0};
+        }
         int[] leftSum = new int[arrayA.length];
         int[] rightSum = new int[arrayA.length];
         leftSum[0] = 1;
@@ -40,7 +70,7 @@ public class Main {
         for (int i = arrayA.length - 2; i >= 0; i--) {
             sum = sum * arrayA[i+1];
             if (i - 1 >=0) {
-                rightSum[i] = sum * leftSum[i - 1];
+                rightSum[i] = sum * leftSum[i - 1] * arrayA[i-1];
             } else {
                 rightSum[i] = sum;
             }
