@@ -1,6 +1,9 @@
 package com.zts.everyday;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author zts
@@ -47,6 +50,47 @@ public class Main202310 {
 		long rw = row;
 		long cl = col;
 		return (int) ((rw * cl) % (1000000000 + 7));
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/number-of-senior-citizens/?envType=daily-question&envId=2023-10-21
+	 * @param details
+	 * @return
+	 */
+	public int countSeniors(String[] details) {
+		int ans = 0;
+		for (String detail : details) {
+			Integer age = Integer.valueOf(detail.substring(11, 13));
+			if (age > 60) {
+				ans++;
+			}
+		}
+		return ans;
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/count-unreachable-pairs-of-nodes-in-an-undirected-graph/?envType=daily-question&envId=2023-10-21
+	 * @param n
+	 * @param edges
+	 * @return： 想法，将数据放入到对应的节点进行遍历，这样已经能遍历过的节点就不用管了。然后计算能当前不跟当前节点在同一个连通图里面的节点。
+	 */
+	public long countPairs(int n, int[][] edges) {
+		Map<Integer, List<Integer>> map = new HashMap<>();
+		boolean[][] visited = new boolean[edges.length][edges[0].length];
+		for (int i = 0; i < edges.length; i++) {
+			for (int j = i; j < edges[0].length; j++) {
+				if (!visited[i][j]) {
+					dfs(edges, visited, map, i, j);
+				}
+			}
+		}
+		return 1L;
+	}
+
+	private void dfs(int[][] edges, boolean[][] visited, Map<Integer, List<Integer>> map, int i, int j) {
+
 	}
 
 
