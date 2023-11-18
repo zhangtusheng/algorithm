@@ -1,9 +1,8 @@
 package com.zts.everyday;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import com.zts.struct.UnionFind;
 
 /**
  * @author zts
@@ -14,7 +13,11 @@ public class Main202310 {
 
 	public static void main(String[] args) {
 		Main202310 main = new Main202310();
-		System.out.println(main.tupleSameProduct(new int[] {1,2,4,5,10}));
+		//System.out.println(main.tupleSameProduct(new int[] {1,2,4,5,10}));
+		//System.out.println(JSON.toJSONString(main.countPairs(7, new int[][]{{0,2},{0,5},{2,4},{1,6},{5,4}})));
+		System.out.println(main.hIndex(new int[]{0, 1, 3, 5, 6}));
+		System.out.println(main.hIndex(new int[]{1, 2, 100}));
+
 	}
 
 
@@ -42,22 +45,39 @@ public class Main202310 {
 	 * @return： 想法，将数据放入到对应的节点进行遍历，这样已经能遍历过的节点就不用管了。然后计算能当前不跟当前节点在同一个连通图里面的节点。
 	 */
 	public long countPairs(int n, int[][] edges) {
-		Map<Integer, List<Integer>> map = new HashMap<>();
-		boolean[][] visited = new boolean[edges.length][edges[0].length];
-		for (int i = 0; i < edges.length; i++) {
-			for (int j = i; j < edges[0].length; j++) {
-				if (!visited[i][j]) {
-					dfs(edges, visited, map, i, j);
-				}
-			}
+		UnionFind uf = new UnionFind(n);
+		for (int[] edge : edges) {
+			int x = edge[0], y = edge[1];
+			uf.union(x, y);
 		}
-		return 1L;
+		long res = 0;
+		for (int i = 0; i < n; i++) {
+			res += n - uf.getSize(uf.find(i));
+		}
+		return res / 2;
 	}
 
-	private void dfs(int[][] edges, boolean[][] visited, Map<Integer, List<Integer>> map, int i, int j) {
 
+	/**
+	 * https://leetcode.cn/problems/h-index-ii/?envType=daily-question&envId=2023-10-30
+	 * @param citations
+	 * @return
+	 */
+	public int hIndex(int[] citations) {
+		int length = citations.length;
+		if (length == 1) {
+			return 1;
+		}
+		int start = length - 1;
+		while (citations[start] >= length - start) {
+			start--;
+		}
+		return start + 1;
 	}
 
+	private int midFind(int[] citations) {
+		return 0;
+	}
 
 	/**
 	 * https://leetcode.cn/problems/tuple-with-same-product/?envType=daily-question&envId=2023-10-19
