@@ -15,7 +15,52 @@ public class Main {
     public static void main(String[] args) {
         Main main = new Main();
        // System.out.println(JSON.toJSONString(main.trainingPlan(new int[]{1, 2, 3, 4, 5})));
-        System.out.println(JSON.toJSONString(main.statisticalResult(new int[]{2})));
+        System.out.println(JSON.toJSONString(main.plusOne(new int[]{9,9,9})));
+    }
+
+
+    /**
+     * https://leetcode.cn/problems/set-matrix-zeroes/
+     * @param matrix
+     */
+    public void setZeroes(int[][] matrix) {
+
+    }
+
+
+    /**
+     * https://leetcode.cn/problems/plus-one/
+     * @param digits
+     * @return
+     */
+    public int[] plusOne(int[] digits) {
+        int n = digits.length;
+        if (n == 1) {
+            int k = digits[0] + 1;
+            if (k == 10) {
+                return new int[] {1, 0};
+            }else {
+                digits[0]++;
+                return digits;
+            }
+        }
+        int current = 1;
+        List<Integer> value = new ArrayList<>();
+        for (int i = n -1; i >=0  ; i--) {
+            int currentValue = (current + digits[i]);
+            digits[i] = currentValue % 10;
+            current = currentValue / 10;
+            value.add(digits[i]);
+        }
+        if (current != 0) {
+            value.add(1);
+        }
+        int[] result = new int[value.size()];
+        int length = value.size();
+        for (int i = value.size() -1; i >= 0 ; i--) {
+            result[length - i -1] = value.get(i);
+        }
+        return result;
     }
 
 

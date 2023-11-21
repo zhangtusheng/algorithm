@@ -22,6 +22,41 @@ public class Main202310 {
 
 
 	/**
+	 * https://leetcode.cn/problems/maximum-area-of-a-piece-of-cake-after-horizontal-and-vertical-cuts/?envType=daily-question&envId=2023-10-27
+	 * @param h
+	 * @param w
+	 * @param horizontalCuts
+	 * @param verticalCuts
+	 * @return
+	 */
+	public int maxArea(int h, int w, int[] horizontalCuts, int[] verticalCuts) {
+		Arrays.sort(horizontalCuts);
+		Arrays.sort(verticalCuts);
+		int col = 0;
+		int start = 0;
+		for (int i = 0;i < verticalCuts.length;i++) {
+			int value = verticalCuts[i];
+			int distance = value -  start;
+			col = Math.max(col, distance);
+			start = value;
+		}
+		col = Math.max(w - start, col);
+		start = 0;
+		int row = 0;
+		for (int i = 0;i < horizontalCuts.length;i++) {
+			int value = horizontalCuts[i];
+			int distance = value -  start;
+			row = Math.max(row, distance);
+			start = value;
+		}
+		row = Math.max(row, h - start);
+		long rw = row;
+		long cl = col;
+		return (int) ((rw * cl) % (1000000000 + 7));
+	}
+
+
+	/**
 	 * https://leetcode.cn/problems/number-of-senior-citizens/?envType=daily-question&envId=2023-10-21
 	 * @param details
 	 * @return
