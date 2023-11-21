@@ -19,7 +19,43 @@ public class Main202311 {
 		//System.out.println(main202311.vowelStrings(new String[] {"are", "amy", "u"}, 0, 2));
 		//System.out.println(JSON.toJSONString(main202311.successfulPairs(new int[] {5,1, 3}, new int[]{1, 2, 3, 4, 5}, 7)));
 		//System.out.println(main202311.findFirstGreaterOrEqual(new int[]{1,2,3,5,6}, 1));
-		System.out.println(main202311.maximumSum(new int[] {18, 43, 36, 13, 7}));
+		//System.out.println(main202311.maximumSum(new int[] {18, 43, 36, 13, 7}));
+		System.out.println(main202311.minDeletion(new int[]{1,1,2,2,3,3}));
+		System.out.println(main202311.minDeletion(new int[]{1,1,2,3,5}));
+		System.out.println(main202311.minDeletion(new int[]{7,14}));
+	}
+
+	/**
+	 * https://leetcode.cn/problems/minimum-deletions-to-make-array-beautiful/description/?envType=daily-question&envId=2023-11-21
+	 * @param nums
+	 * @return
+	 */
+	public int minDeletion(int[] nums) {
+		if (nums == null || nums.length == 0){
+			return 0;
+		}
+		int ans = 0;
+		int index = 0;
+		for (int i = 0; i < nums.length; i++) {
+			if (index == 0) {
+				nums[index++] = nums[i];
+			} else {
+				if ((index + 1) % 2 == 0) {
+					if (nums[index - 1] == nums[i]) {
+						ans++;
+					} else {
+						nums[index++] = nums[i];
+					}
+				} else {
+					nums[index++] = nums[i];
+
+				}
+			}
+		}
+		if (index % 2 != 0 ){
+			return ans+1;
+		}
+		return ans;
 	}
 
 	/**
