@@ -1,11 +1,18 @@
 package com.zts.everyday;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Stack;
+
+import com.alibaba.fastjson.JSON;
+import com.zts.model.TreeNode;
+import com.zts.tree.BuilderTree;
 
 /**
  * @author zts
@@ -20,9 +27,189 @@ public class Main202311 {
 		//System.out.println(JSON.toJSONString(main202311.successfulPairs(new int[] {5,1, 3}, new int[]{1, 2, 3, 4, 5}, 7)));
 		//System.out.println(main202311.findFirstGreaterOrEqual(new int[]{1,2,3,5,6}, 1));
 		//System.out.println(main202311.maximumSum(new int[] {18, 43, 36, 13, 7}));
-		System.out.println(main202311.minDeletion(new int[]{1,1,2,2,3,3}));
-		System.out.println(main202311.minDeletion(new int[]{1,1,2,3,5}));
-		System.out.println(main202311.minDeletion(new int[]{7,14}));
+//		System.out.println(main202311.minDeletion(new int[]{1,1,2,2,3,3}));
+//		System.out.println(main202311.minDeletion(new int[]{1,1,2,3,5}));
+//		System.out.println(main202311.minDeletion(new int[]{7,14}));
+		//System.out.println(main202311.countPairs(List.of(-1, 1, 2, 3, 1), 2));
+		Integer[] data = {2,3,5,8,13,21,34};
+		TreeNode treeNode = new BuilderTree().buildTree(data);
+		main202311.reverseOddLevels(treeNode);
+		System.out.println(JSON.toJSONString(treeNode));
+		//System.out.println(main202311.pseudoPalindromicPaths(treeNode));
+		//System.out.println(main202311.minPathCost(new int[][]{{5,3},{4,0},{2,1}}, new int[][]{{9,8},{1,5},{10,12},{18,6},{2,4},{14,3}}));
+		//System.out.println(main202311.sumSubarrayMins(new int[] {11,81,94,43,3}));
+
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/reverse-odd-levels-of-binary-tree/?envType=daily-question&envId=2023-12-15	 * @param root
+	 * @return
+	 */
+	public TreeNode reverseOddLevels(TreeNode root) {
+		Queue<TreeNode> queue = new ArrayDeque<>();
+		queue.offer(root);
+		int index = 1;
+		while (!queue.isEmpty()) {
+			int size = queue.size();
+			List<TreeNode> nodes = new ArrayList<>();
+			for (int i = 0; i < size; i++) {
+				TreeNode poll = queue.poll();
+				TreeNode left = poll.left;
+				if (left != null) {
+					queue.offer(left);
+					nodes.add(left);
+				}
+				TreeNode right = poll.right;
+				if (right !=null){
+					queue.offer(right);
+					nodes.add(right);
+				}
+			}
+			if (index % 2==1  && nodes.size() > 0){
+				int length = nodes.size();
+				for (int i = 0; i < length / 2; i++) {
+					TreeNode treeNode = nodes.get(i);
+					TreeNode treeNode1 = nodes.get(length - i - 1);
+					int value = treeNode.val;
+					treeNode.val = treeNode1.val;
+					treeNode1.val = value;
+				}
+			}
+			index++;
+		}
+		return root;
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/sum-of-subarray-minimums/?envType=daily-question&envId=2023-11-27
+	 * @param arr
+	 * @return
+	 */
+	public int sumSubarrayMins(int[] arr) {
+		int ans = 0;
+		int mod = 1000000007;
+//		for (int i = 0; i < arr.length; i++) {
+//			int mid = arr[i];
+//			Map<Integer, Integer> map = new HashMap<>();
+//			map.put(mid, 1);
+//			for (int j = i + 1 ; j < arr.length; j++) {
+//				if (mid > arr[j]) {
+//					map.put(arr[j], 1);
+//					mid = arr[j];
+//				} else {
+//					Integer value = map.get(mid);
+//					value++;
+//					map.put(mid, value);
+//				}
+//			}
+//			long sum = 0;
+//			for (Map.Entry<Integer, Integer> integerIntegerEntry : map.entrySet()) {
+//				sum += (integerIntegerEntry.getKey() * integerIntegerEntry.getValue());
+//				sum = sum % mod;
+//			}
+//			ans = (int) ((ans+sum) % mod);
+//		}
+
+
+
+		return ans;
+	}
+
+
+	public String simplifyPath(String path) {
+		Stack<Character> stack = new Stack<>();
+		return path;
+
+	}
+
+
+
+	public int pseudoPalindromicPaths (TreeNode root) {
+		int[] map = new int[10];
+		return dfs(root, map);
+	}
+
+	private int dfs(TreeNode root, int[] map){
+		if (root == null) {
+			return 0;
+		}
+		map[root.val]++;
+		int res = 0;
+		if (root.left == null && root.right == null) {
+			int count = 0;
+			for (int i = 0; i < map.length; i++) {
+				if (map[i] % 2 !=0) {
+					count++;
+				}
+				if (count > 1){
+					break;
+				}
+			}
+			if (count <=1) {
+				res = 1;
+			}
+		} else {
+			res = dfs(root.left, map) + dfs(root.right, map);
+		}
+		map[root.val]--;
+		return res;
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/?envType=daily-question&envId=2023-11-24
+	 * @param nums
+	 * @param target
+	 * @return
+	 */
+	public int countPairs(List<Integer> nums, int target) {
+		int ans = 0;
+		int length = nums.size();
+		for (int i = 0; i < length; i++) {
+			for (int j = i + 1; j < length; j++) {
+				if (nums.get(i) + nums.get(j) < target) {
+					ans++;
+				}
+			}
+		}
+		return ans;
+
+	}
+
+
+
+
+
+	/**
+	 * https://leetcode.cn/problems/minimum-path-cost-in-a-grid/?envType=daily-question&envId=2023-11-22
+	 * @param grid
+	 * @param moveCost
+	 * @return
+	 */
+	public int minPathCost(int[][] grid, int[][] moveCost) {
+		int length = grid.length;
+		int[][] dp = new int[length][grid[0].length];
+		for (int i = 0; i < grid.length; i++) {
+			Arrays.fill(dp[i], Integer.MAX_VALUE);
+		}
+		for (int i = 0; i < grid[0].length; i++) {
+			dp[0][i] = grid[0][i];
+		}
+		// 第二层开始往下走
+		for (int i = 1; i < grid.length; i++) {
+			for (int j = 0; j < grid[0].length; j++) {
+				for (int k = 0; k < grid[0].length; k++) {
+					dp[i][j] = Math.min(dp[i][j], moveCost[grid[i-1][k]][j] + dp[i-1][k] + grid[i][j]);
+				}
+			}
+		}
+		int min = Integer.MAX_VALUE;
+		for (int i = 0; i < grid[0].length; i++) {
+			min = Math.min(min, dp[length -1][i]);
+		}
+		return min;
 	}
 
 	/**
