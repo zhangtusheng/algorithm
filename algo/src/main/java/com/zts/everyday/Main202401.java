@@ -1,5 +1,7 @@
 package com.zts.everyday;
 
+import com.zts.everyday.d240318.NumArray;
+
 /**
  * @author zts
  * @date 2024/1/10 14:42
@@ -8,9 +10,25 @@ package com.zts.everyday;
 public class Main202401 {
 
 	public static void main(String[] args) {
-		Main202401 main202401 = new Main202401();
-		System.out.println(main202401.minLength("ACBBD"));
+//		Main202401 main202401 = new Main202401();
+//		System.out.println(main202401.minLength("ACBBD"));
+		NumArray numArray = new NumArray(new int[]{-2, 0, 3, -5, 2, -1});
+		//[0, 2], [2, 5], [0, 5]
+		System.out.println(numArray.sumRange(0, 2));
+		System.out.println(numArray.sumRange(2, 5));
+		System.out.println(numArray.sumRange(0, 5));
 	}
+
+
+	/**
+	 * https://leetcode.cn/problems/removing-minimum-number-of-magic-beans/?envType=daily-question&envId=2024-01-18
+	 * @param beans
+	 * @return
+	 */
+	public long minimumRemoval(int[] beans) {
+		return 0L;
+	}
+
 
 	/**
 	 * https://leetcode.cn/problems/minimum-string-length-after-removing-substrings/description/?envType=daily-question&envId=2024-01-10
