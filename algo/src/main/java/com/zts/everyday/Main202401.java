@@ -1,6 +1,6 @@
 package com.zts.everyday;
 
-import com.zts.everyday.d240318.NumArray;
+import java.util.Arrays;
 
 /**
  * @author zts
@@ -10,13 +10,15 @@ import com.zts.everyday.d240318.NumArray;
 public class Main202401 {
 
 	public static void main(String[] args) {
-//		Main202401 main202401 = new Main202401();
+		Main202401 main202401 = new Main202401();
 //		System.out.println(main202401.minLength("ACBBD"));
-		NumArray numArray = new NumArray(new int[]{-2, 0, 3, -5, 2, -1});
-		//[0, 2], [2, 5], [0, 5]
-		System.out.println(numArray.sumRange(0, 2));
-		System.out.println(numArray.sumRange(2, 5));
-		System.out.println(numArray.sumRange(0, 5));
+//		NumArray numArray = new NumArray(new int[]{-2, 0, 3, -5, 2, -1});
+//		//[0, 2], [2, 5], [0, 5]
+//		System.out.println(numArray.sumRange(0, 2));
+//		System.out.println(numArray.sumRange(2, 5));
+//		System.out.println(numArray.sumRange(0, 5));
+		System.out.println(main202401.minimumRemoval(new int[] {2, 10, 3, 2}));
+
 	}
 
 
@@ -26,7 +28,15 @@ public class Main202401 {
 	 * @return
 	 */
 	public long minimumRemoval(int[] beans) {
-		return 0L;
+		Arrays.sort(beans);
+		long sum = 0, mx = 0;
+		int n = beans.length;
+		for (int i = 0; i < n; i++) {
+			sum += beans[i];
+			// 如果剩下的矩形面积越大，表示拿走的豆子比较少。
+			mx = Math.max(mx, (long) beans[i] * (n - i));
+		}
+		return sum - mx;
 	}
 
 
