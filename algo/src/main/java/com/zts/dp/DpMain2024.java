@@ -1,7 +1,9 @@
 package com.zts.dp;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zts
@@ -26,13 +28,80 @@ public class DpMain2024 {
 //		System.out.println(dpMain2024.minimumTotal(Arrays.asList(Arrays.asList(2), Arrays.asList(3, 4), Arrays.asList(6, 5, 7), Arrays.asList(4, 1, 8, 3))));
 //		System.out.println(dpMain2024.maximalSquare(new char[][]{{'1', '0', '1', '0', '0'}, {'1', '0', '1', '1', '1'}, {'1', '1', '1', '1', '1'}, {'1', '0', '0', '1', '0'}}));
 //		System.out.println(dpMain2024.maximalSquare(new char[][]{{'1', '0'}, {'1', '0'}}));
-		System.out.println(dpMain2024.maximalSquare(new char[][]{
-			{'1','0','1','0'},
-			{'1','0','1','1'},
-			{'1','0','1','1'},
-			{'1','1','1','1'}
-		}));
+//		System.out.println(dpMain2024.maximalSquare(new char[][]{
+//			{'1','0','1','0'},
+//			{'1','0','1','1'},
+//			{'1','0','1','1'},
+//			{'1','1','1','1'}
+//		}));
 
+		System.out.println(dpMain2024.longestPalindrome("babad"));
+
+
+
+	}
+
+	/**
+	 * https://leetcode.cn/problems/longest-palindromic-subsequence/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param s： 其实就是求解前后两个最大的回文串之和。
+	 * @return
+	 */
+	public int longestPalindromeSubseq(String s) {
+
+		return 0;
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/word-break/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param s
+	 * @param wordDict
+	 * @return
+	 */
+	public boolean wordBreak(String s, List<String> wordDict) {
+		boolean[] dp = new boolean[s.length() + 1];
+		Set<String> wordDictSet = new HashSet<>(wordDict);
+		dp[0] = true;
+		for (int i = 0; i <= s.length(); i++) {
+			for (int j = 0; j < i; j++) {
+				if (dp[j] && wordDictSet.contains(s.substring(j, i))) {
+					dp[i] = true;
+					break;
+				}
+			}
+		}
+		return dp[s.length()];
+	}
+
+	/**
+	 * https://leetcode.cn/problems/longest-palindromic-substring/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param s：马拉车算法。
+	 * @return
+	 */
+	public String longestPalindrome(String s) {
+		if (s == null || s.length() < 1) {
+			return "";
+		}
+		int start = 0, end = 0;
+		for (int i = 0; i < s.length(); i++) {
+			int len1 = expandAroundCenter(s, i, i);
+			int len2 = expandAroundCenter(s, i, i + 1);
+			int len = Math.max(len1, len2);
+			if (len > end - start) {
+				start = i - (len - 1) / 2;
+				end = i + len / 2;
+			}
+		}
+		return s.substring(start, end + 1);
+	}
+
+	private int expandAroundCenter(String s, int left, int right) {
+		int L = left, R = right;
+		while ( L >= 0 && R < s.length() && s.charAt(L) == s.charAt(R)) {
+			L--;
+			R++;
+		}
+		return R - L - 1;
 	}
 
 	/**
