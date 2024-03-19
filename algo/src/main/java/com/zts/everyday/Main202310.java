@@ -1,5 +1,6 @@
 package com.zts.everyday;
 
+import java.util.*;
 import java.util.Arrays;
 
 import com.zts.struct.UnionFind;
@@ -17,6 +18,80 @@ public class Main202310 {
 		//System.out.println(JSON.toJSONString(main.countPairs(7, new int[][]{{0,2},{0,5},{2,4},{1,6},{5,4}})));
 		System.out.println(main.hIndex(new int[]{0, 1, 3, 5, 6}));
 		System.out.println(main.hIndex(new int[]{1, 2, 100}));
+
+		//System.out.println(main.tupleSameProduct(new int[] {1,2,4,5,10}));
+		System.out.println(main.punishmentNumber(37));
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/?envType=daily-question&envId=2023-10-28
+	 * @param n
+	 * @return
+	 */
+	public int punishmentNumber(int n) {
+		int ans = 0;
+		for(int i = 1;i<=n;i++) {
+			int sum = i * i;
+			boolean check = check(i, sum);
+			if (check) {
+				ans+=i*i;
+			}
+		}
+		return ans;
+
+	}
+
+	private boolean check(int i, int sum) {
+		int ans = 0;
+		while (sum > 0) {
+			ans += sum % 10;
+			sum = sum /10;
+		}
+		return ans == i;
+	}
+
+	/**
+	 * https://leetcode.cn/problems/count-the-digits-that-divide-a-number/?envType=daily-question&envId=2023-10-28
+	 * @param num
+	 * @return
+	 */
+	public int countDigits(int num) {
+		int ans = 0;
+		int n = num;
+		while (n > 0) {
+			int mod = n % 10;
+			n = n / 10;
+			if (num % mod == 0) {
+				ans ++;
+			}
+		}
+		return ans;
+
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/take-gifts-from-the-richest-pile/?envType=daily-question&envId=2023-10-28
+	 * @param gifts
+	 * @param k
+	 * @return
+	 */
+	public long pickGifts(int[] gifts, int k) {
+		PriorityQueue<Integer> queue = new PriorityQueue<>((a, b) -> b -a);
+		for (int i = 0; i < gifts.length; i++) {
+			queue.offer(gifts[i]);
+		}
+		for (int i = 0; i < k; i++) {
+			Integer peek = queue.poll();
+			int value = (int)Math.sqrt(peek);
+			queue.offer(value);
+		}
+		long ans = 0;
+		while (!queue.isEmpty()) {
+			ans += queue.poll();
+		}
+		return ans;
 
 	}
 

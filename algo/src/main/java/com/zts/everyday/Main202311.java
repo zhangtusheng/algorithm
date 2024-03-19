@@ -1,24 +1,18 @@
 package com.zts.everyday;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Stack;
+import com.alibaba.fastjson.JSON;
+
+import java.util.*;
 
 import com.alibaba.fastjson.JSON;
 import com.zts.model.TreeNode;
 import com.zts.tree.BuilderTree;
 
 /**
- * @author zts
- * @date 2023/11/7 11:33
- * @Description
- */
+ * @Author zhangtusheng
+ * @Date 2023 11 16 23 21
+ * @describe：
+ **/
 public class Main202311 {
 
 	public static void main(String[] args) {
@@ -212,221 +206,152 @@ public class Main202311 {
 		return min;
 	}
 
-	/**
-	 * https://leetcode.cn/problems/minimum-deletions-to-make-array-beautiful/description/?envType=daily-question&envId=2023-11-21
-	 * @param nums
-	 * @return
-	 */
-	public int minDeletion(int[] nums) {
-		if (nums == null || nums.length == 0){
-			return 0;
-		}
-		int ans = 0;
-		int index = 0;
-		for (int i = 0; i < nums.length; i++) {
-			if (index == 0) {
-				nums[index++] = nums[i];
-			} else {
-				if ((index + 1) % 2 == 0) {
-					if (nums[index - 1] == nums[i]) {
-						ans++;
-					} else {
-						nums[index++] = nums[i];
-					}
-				} else {
-					nums[index++] = nums[i];
-
-				}
-			}
-		}
-		if (index % 2 != 0 ){
-			return ans+1;
-		}
-		return ans;
-	}
-
-	/**
-	 * https://leetcode.cn/problems/max-sum-of-a-pair-with-equal-sum-of-digits/?envType=daily-question&envId=2023-11-18
-	 * @param nums
-	 * @return
-	 */
-	public int maximumSum(int[] nums) {
-		int length = nums.length;
-		int[] sum = new int[length];
-		Map<Integer, PriorityQueue<Integer>> map = new HashMap<>();
-		for (int i = 0; i < length; i++) {
-			sum[i] = bitSum(nums[i]);
-			PriorityQueue<Integer> currentQueue = map.get(sum[i]);
-			if (currentQueue !=null) {
-				currentQueue.offer(nums[i]);
-			} else {
-				PriorityQueue<Integer> queue = new PriorityQueue<>(((o1, o2) -> o2 - o1));
-				queue.offer(nums[i]);
-				map.put(sum[i], queue);
-			}
-		}
-		int max = -1;
-		for (Map.Entry<Integer, PriorityQueue<Integer>> queueEntry : map.entrySet()) {
-			PriorityQueue<Integer> value1 = queueEntry.getValue();
-			if (value1.size() >= 2) {
-				int value = value1.poll() + value1.poll();
-				max = Math.max(value, max);
-			}
-		}
-		return max;
-	}
-
-	private int bitSum(int value) {
-		int sum = 0;
-		while (value > 0) {
-			sum += value % 10;
-			value = value / 10;
-		}
-		return sum;
-	}
-
-	/**
-	 * https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/?envType=daily-question&envId=2023-11-16
-	 * @param nums
-	 * @param threshold
-	 * @return
-	 */
-	public int longestAlternatingSubarray(int[] nums, int threshold) {
-		int length = nums.length;
-		int[] indexs = new int[length];
-		for (int i = 0; i < length; i++) {
-			indexs[i] = nums[i] % 2;
-		}
-		int max = 0;
-		int currentLength = 0;
-		for (int i = 0; i < length; i++) {
-			if (currentLength == 0) {
-				if (nums[i] <= threshold && indexs[i] == 0) {
-					currentLength++;
-					max = Math.max(max, currentLength);
-				}
-			}else {
-				if ((indexs[i] != indexs[i-1]) && (nums[i] <= threshold)) {
-					currentLength++;
-					max = Math.max(max, currentLength);
-				} else if (nums[i]<=threshold && indexs[i] == 0){
-					currentLength = 1;
-					max = Math.max(max, currentLength);
-				}else {
-					currentLength = 0;
-				}
-			}
-		}
-		return max;
-	}
 
 
-	/**
-	 * https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/?envType=daily-question&envId=2023-11-10
-	 * @param spells
-	 * @param potions
-	 * @param success
-	 * @return
-	 */
-	public int[] successfulPairs(int[] spells, int[] potions, long success) {
-		int[] result = new int[spells.length];
-		Arrays.sort(potions);
-		// 利用二分法来查找。
-		int length = spells.length;
-		int pLength = potions.length;
-		for (int i = 0; i < length; i++) {
-			int spell = spells[i];
-			long value = (long)Math.ceil(success / (spell * 1.0));
-			int index = findFirstGreaterOrEqual(potions, value);
-			if (index < 0) {
-				result[i] = 0;
-			} else {
-				result[i] = pLength - index;
-			}
-		}
-		return result;
+    public String entityParser(String text) {
+        Map<String, String> map = new HashMap<>();
+        map.put("&quot;", "\"");
+        map.put("&apos;", "\'");
+        map.put("&amp;", "&");
+        map.put("&gt;", ">");
+        map.put("&lt;", "<");
+        map.put("&frasl;", "/");
+        StringBuilder stringBuilder = new StringBuilder();
+        int pos = 0;
+        int length = text.length();
+        while (pos < length) {
+            boolean flag = false;
+            if (text.charAt(pos) == '&') {
+                Set<Map.Entry<String, String>> entries = map.entrySet();
+                for (Map.Entry<String, String> entry : entries) {
+                    String e = entry.getKey();
+                    String c = entry.getValue();
+                    if (pos + e.length() <= length && text.startsWith(e, pos)) {
+                        stringBuilder.append(c);
+                        flag = true;
+                        pos = pos + e.length();
+                        break;
+                    }
+                }
+            }
+            if (!flag) {
+                stringBuilder.append(text.charAt(pos++));
+            }
+        }
+        return stringBuilder.toString();
 
-	}
+    }
 
-	public int findFirstGreaterOrEqual(int[] arr, long target) {
-		int left = 0;
-		int right = arr.length - 1;
-		int resultIndex = -1;
-
-		while (left <= right) {
-			int mid = left + (right - left) / 2;
-
-			if (arr[mid] >= target) {
-				// 当当前元素大于等于目标值时，更新结果并继续在左半边查找
-				resultIndex = mid;
-				right = mid - 1;
-			} else {
-				// 当当前元素小于目标值时，在右半边查找
-				left = mid + 1;
-			}
-		}
-
-		return resultIndex;
-	}
-
-	/**
-	 * https://leetcode.cn/problems/count-the-number-of-vowel-strings-in-range/?envType=daily-question&envId=2023-11-07
-	 * @param words
-	 * @param left
-	 * @param right
-	 * @return
-	 */
-	public int vowelStrings(String[] words, int left, int right) {
-		int ans = 0;
-		Map<Character, Character> map = new HashMap<>();
-		map.put('a', 'a');
-		map.put('e', 'e');
-		map.put('i', 'i');
-		map.put('o', 'o');
-		map.put('u', 'u');
-		for (int i = left; i <= right; i++) {
-			char[] array = words[i].toCharArray();
-			int start = 0;
-			int end = words[i].length() -1;
-			if (map.get(array[start]) != null && map.get(array[end]) != null) {
-				ans++;
-			}
-		}
-		return ans;
-	}
+    public int[] prefix_function(String s) {
+        int n = s.length();
+        int[] ans = new int[n];
+        int len = 0;
+        int i = 1;
+        while (i < n) {
+            if (s.charAt(i) == s.charAt(len)) {
+                len++;
+                ans[i] = len;
+                i++;
+            } else {
+                if (len != 0) {
+                    len = ans[len - 1];
+                }else {
+                    ans[i] = 0;
+                    i++;
+                }
+            }
+        }
+        return ans;
+    }
 
 
-	/**
-	 * https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/?envType=daily-question&envId=2023-11-06
-	 * @param nums
-	 * @return
-	 */
-	public int findMaximumXOR(int[] nums) {
-		int max = 0;
-		for (int i = 0; i < nums.length; i++) {
-			for (int j = i+1; j < nums.length; j++) {
-				max = Math.max(max, nums[i] ^ nums[j]);
-			}
-		}
-		return max;
-	}
+    /**
+     * https://leetcode.cn/problems/maximum-subarray/?envType=daily-question&envId=2023-11-20
+     * @param nums
+     * @return
+     */
+    public int maxSubArray(int[] nums) {
+        int sum = 0;
+        int max = nums[0];
+        for (int num : nums) {
+            sum = sum + num > 0 ? sum + num : 0;
+            max = Math.max(max, sum);
+        }
+        return max;
+    }
 
-	/**
-	 * https://leetcode.cn/problems/repeated-dna-sequences/?envType=daily-question&envId=2023-11-06
-	 * @param s
-	 * @return
-	 */
-	public List<String> findRepeatedDnaSequences(String s) {
-		List<String> result = new ArrayList<>();
-		Map<String, Integer> map = new HashMap<>();
-		int length = 10;
-		for (int i = 0; i <= s.length() - length; i++) {
-			String sub = s.substring(i, i + length);
-			map.put(sub, map.getOrDefault(sub, 0) + 1);
-			if (map.get(sub) == 2) {
-				result.add(sub);
-			}
-		}
-		return result;
-	}
+
+    public int findMinimumOperations(String s1, String s2, String s3) {
+        int length = Math.min(s1.length(), Math.min(s2.length(), s3.length()));
+        // 先从最大长度开始，如果相等的话，就返回他的操作次数。
+        int nums = 0;
+        String[] strings = {s1, s2, s3};
+        Arrays.sort(strings);
+        int i =0 ;
+        boolean flag = true;
+        String target = strings[0].substring(0, length);
+        for (i = 0; i < strings.length; i++) {
+            if (strings[i].startsWith(target)) {
+                if (strings[i].length() != target.length()) {
+                    nums++;
+                }
+            } else {
+                flag = false;
+                break;
+            }
+        }
+        if (flag) {
+            return nums;
+        }
+        nums = 0;
+        length = strings[0].length() < 3 ? strings[0].length() : 2;
+        target = strings[0].substring(length);
+        for (i = 0; i < strings.length; i++) {
+            if (strings[i].startsWith(target)) {
+                if (strings[i].length() != target.length()) {
+                    nums++;
+                }
+            } else {
+                flag = false;
+                break;
+            }
+        }
+        if (flag) {
+            return nums;
+        }
+        return -1;
+
+
+    }
+
+    public int longestAlternatingSubarray(int[] nums, int threshold) {
+        int length = nums.length;
+        int[] indexs = new int[length];
+        for (int i = 0; i < length; i++) {
+            indexs[i] = nums[i] % 2;
+        }
+        int max = 0;
+        int currentLength = 0;
+        for (int i = 0; i < length; i++) {
+            if (currentLength == 0) {
+                if (nums[i] <= threshold && indexs[i] == 0) {
+                    currentLength++;
+                    max = Math.max(max, currentLength);
+                }
+            }else {
+                if ((indexs[i] != indexs[i-1]) && (nums[i] <= threshold)) {
+                    currentLength++;
+                    max = Math.max(max, currentLength);
+                } else if (nums[i]<=threshold && indexs[i] == 0){
+                    currentLength = 1;
+                    max = Math.max(max, currentLength);
+                }else {
+                    currentLength = 0;
+                }
+            }
+        }
+        return max;
+    }
+
+
 }
