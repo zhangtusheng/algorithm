@@ -1,5 +1,8 @@
 package com.zts.dp;
 
+import com.zts.everyday.FrontMiddleBackQueue;
+import com.zts.everyday.Main202311;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +39,12 @@ public class DpMain2024 {
 //		}));
 
 //		System.out.println(dpMain2024.longestPalindrome("babad"));
+//		System.out.println(dpMain2024.minimumDeleteSum("delete", "leet"));
+
+
+//		System.out.println(dpMain2024.longestPalindromeSubseq("bbbab"));
+//		System.out.println(dpMain2024.minDistance("distance", "springbok"));
+		System.out.println(dpMain2024.minimumDeleteSum("sea", "eat"));
 		System.out.println(dpMain2024.minimumDeleteSum("delete", "leet"));
 
 
@@ -49,7 +58,7 @@ public class DpMain2024 {
 	 * @return
 	 */
 	public int numDistinct(String s, String t) {
-
+		return 0;
 	}
 
 
@@ -64,24 +73,55 @@ public class DpMain2024 {
 		int[][] dp = new int[s1.length() + 1][s2.length() + 1];
 		dp[0][0] = 0;
 		for (int i = 1; i <= s1.length(); i++) {
-			dp[i][0] = dp[i-1][0] + s1.charAt(i - 1);
+			dp[i][0] = dp[i - 1][0] + s1.charAt(i - 1);
 		}
 		for (int i = 1; i <= s2.length(); i++) {
-			dp[0][i] = dp[0][i-1] + s2.charAt(i - 1);
+			dp[0][i] = dp[0][i - 1] + s2.charAt(i - 1);
 		}
 		for (int i = 1; i <= s1.length(); i++) {
-			int code1 = s1.codePointAt(i-1);
-			for (int j = 1; j <= s2.length() ; j++) {
-				int code2 = s2.codePointAt(j-1);
+			int code1 = s1.codePointAt(i - 1);
+			for (int j = 1; j <= s2.length(); j++) {
+				int code2 = s2.codePointAt(j - 1);
 				if (code1 == code2) {
-					dp[i][j] = dp[i-1][j-1];
+					dp[i][j] = dp[i - 1][j - 1];
 				} else {
-					dp[i][j] = Math.min(dp[i-1][j] + code1, dp[i][j-1] + code2);
+					dp[i][j] = Math.min(dp[i - 1][j] + code1, dp[i][j - 1] + code2);
 				}
 			}
 		}
 		return dp[s1.length()][s2.length()];
 	}
+	/**
+	 * https://leetcode.cn/problems/edit-distance/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param word1
+	 * @param word2
+	 * @return
+	 */
+	public int minDistance(String word1, String word2) {
+		int[][] dp = new int[word1.length() + 1][word2.length() + 1];
+		int n = word1.length(), m = word2.length();
+		if (n * m == 0) {
+			return n + m;
+		}
+		for (int i = 0; i <= word1.length(); i++) {
+			dp[i][0] = i;
+		}
+		for (int i = 0; i <= word2.length(); i++) {
+			dp[0][i] = i;
+		}
+		for (int i = 1; i <= word1.length(); i++) {
+			for (int j = 1; j <= word2.length(); j++) {
+				if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+					dp[i][j] = dp[i - 1][j - 1];
+				} else {
+					dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
+				}
+			}
+		}
+		return dp[word1.length()][word2.length()];
+	}
+
+
 
 	/**
 	 * https://leetcode.cn/problems/longest-palindromic-subsequence/?envType=study-plan-v2&envId=dynamic-programming
@@ -89,8 +129,21 @@ public class DpMain2024 {
 	 * @return
 	 */
 	public int longestPalindromeSubseq(String s) {
-
-		return 0;
+		int n = s.length();
+		int[][] dp = new int[n][n];
+		for (int i = n - 1; i >= 0; i--) {
+			dp[i][i] = 1;
+			char c1 = s.charAt(i);
+			for (int j = i + 1; j < n; j++) {
+				char c2 = s.charAt(j);
+				if (c1 == c2) {
+					dp[i][j] = dp[i + 1][j - 1] + 2;
+				} else {
+					dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+				}
+			}
+		}
+		return dp[0][n - 1];
 	}
 
 
