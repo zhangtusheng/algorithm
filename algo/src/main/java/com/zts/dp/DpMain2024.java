@@ -35,10 +35,52 @@ public class DpMain2024 {
 //			{'1','1','1','1'}
 //		}));
 
-		System.out.println(dpMain2024.longestPalindrome("babad"));
+//		System.out.println(dpMain2024.longestPalindrome("babad"));
+		System.out.println(dpMain2024.minimumDeleteSum("delete", "leet"));
 
 
 
+	}
+
+	/**
+	 * https://leetcode.cn/problems/distinct-subsequences/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param s
+	 * @param t
+	 * @return
+	 */
+	public int numDistinct(String s, String t) {
+
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/minimum-ascii-delete-sum-for-two-strings/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param s1
+	 * @param s2
+	 * 逻辑：利用dp【i][j]表示s1的前i个字符和s2的前j个字符的最小删除和。
+	 * @return
+	 */
+	public int minimumDeleteSum(String s1, String s2) {
+		int[][] dp = new int[s1.length() + 1][s2.length() + 1];
+		dp[0][0] = 0;
+		for (int i = 1; i <= s1.length(); i++) {
+			dp[i][0] = dp[i-1][0] + s1.charAt(i - 1);
+		}
+		for (int i = 1; i <= s2.length(); i++) {
+			dp[0][i] = dp[0][i-1] + s2.charAt(i - 1);
+		}
+		for (int i = 1; i <= s1.length(); i++) {
+			int code1 = s1.codePointAt(i-1);
+			for (int j = 1; j <= s2.length() ; j++) {
+				int code2 = s2.codePointAt(j-1);
+				if (code1 == code2) {
+					dp[i][j] = dp[i-1][j-1];
+				} else {
+					dp[i][j] = Math.min(dp[i-1][j] + code1, dp[i][j-1] + code2);
+				}
+			}
+		}
+		return dp[s1.length()][s2.length()];
 	}
 
 	/**
