@@ -1,12 +1,8 @@
 package com.zts.dp;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.alibaba.fastjson.JSON;
+
+import java.util.*;
 
 /**
  * @author zts
@@ -62,9 +58,66 @@ public class DpMain2024 {
 //		System.out.println(dpMain2024.findLongestChain(new int[][]{{1,2}, {2,3}, {3,4}}));
 
 //		System.out.println(dpMain2024.longestCommonSubsequence("abcde", "ace"));
-		System.out.println(dpMain2024.maxUncrossedLines(new int[]{2,5,1,2,5}, new int[]{10,5,2,1,5,2}));
-		System.out.println(dpMain2024.maxUncrossedLines(new int[]{1,3,7,1,7,5}, new int[]{1,9,2,5,1}));
+//		System.out.println(dpMain2024.maxUncrossedLines(new int[]{2,5,1,2,5}, new int[]{10,5,2,1,5,2}));
+//		System.out.println(dpMain2024.maxUncrossedLines(new int[]{1,3,7,1,7,5}, new int[]{1,9,2,5,1}));
+//		System.out.println(dpMain2024.minInsertions("zzazz"));
+//		System.out.println(dpMain2024.minInsertions("mbadm"));
+//		System.out.println(dpMain2024.minInsertions("leetcode"));
+		System.out.println(JSON.toJSONString(dpMain2024.longestObstacleCourseAtEachPosition(new int[]{1,2,3,2})));
 
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/find-the-longest-valid-obstacle-course-at-each-position/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param obstacles
+	 * @return
+	 */
+	public int[] longestObstacleCourseAtEachPosition(int[] obstacles) {
+		List<Integer> ls = new ArrayList<>();
+		int n = obstacles.length;
+		int[] ans = new int[n];
+		for (int i = 0; i < n; i++) {
+			int x = obstacles[i];
+			int l = 0, r = ls.size();
+			while (l < r) {
+				int mid = l + r >> 1;
+				if (ls.get(mid) <= x) {
+					l = mid + 1;
+				} else {
+					r = mid;
+				}
+			}
+			if (l == ls.size()) {
+				ls.add(x);
+			} else {
+				ls.set(l, x);
+			}
+			ans[i] = l + 1;
+		}
+		return ans;
+
+	}
+
+	/**
+	 * https://leetcode.cn/problems/minimum-insertion-steps-to-make-a-string-palindrome/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param s: 思路是dp[i][j]表示s[j:i]的最少插入次数，如果s[i] == s[j]，则dp[i][j] = dp[i-1][j+1]，否则dp[i][j] = min(dp[i-1][j], dp[i][j+1]) + 1
+	 * @return
+	 */
+	public int minInsertions(String s) {
+		int n = s.length();
+		int[][] dp = new int[n][n];
+		// dp[i][j] 从j-i的最少操作次数为k
+		for (int i = 0; i < n; i++) {
+			for (int j = i-1; j >= 0; j--) {
+				if (s.charAt(i) == s.charAt(j)) {
+					dp[i][j] = dp[i-1][j+1];
+				} else {
+					dp[i][j] = Math.min(dp[i-1][j], dp[i][j+1]) + 1;
+				}
+			}
+		}
+		return dp[n-1][0];
 	}
 
 
