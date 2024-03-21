@@ -63,8 +63,51 @@ public class DpMain2024 {
 //		System.out.println(dpMain2024.minInsertions("zzazz"));
 //		System.out.println(dpMain2024.minInsertions("mbadm"));
 //		System.out.println(dpMain2024.minInsertions("leetcode"));
-		System.out.println(JSON.toJSONString(dpMain2024.longestObstacleCourseAtEachPosition(new int[]{1,2,3,2})));
+//		System.out.println(JSON.toJSONString(dpMain2024.longestObstacleCourseAtEachPosition(new int[]{1,2,3,2})));
+//		System.out.println(dpMain2024.maxProfit(new int[]{1, 2, 3, 0, 2}));
+//		System.out.println(dpMain2024.maxProfit(new int[]{1}));
+		System.out.println(dpMain2024.maxProfit(new int[]{1, 3, 2, 8, 4, 9}, 2));
 
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param prices
+	 * @param fee
+	 * @return
+	 */
+	public int maxProfit(int[] prices, int fee) {
+		int[][] dp = new int[prices.length][2];
+		// 买入
+		dp[0][0] = -prices[0];
+		// 卖出。
+		dp[0][1] = 0;
+		for (int i = 1; i < prices.length; i++) {
+			dp[i][0] = Math.max(dp[i-1][0], dp[i-1][1] - prices[i]);
+			dp[i][1] = Math.max(dp[i-1][1], dp[i-1][0] + prices[i] - fee);
+		}
+
+		return Math.max(dp[prices.length-1][0], dp[prices.length-1][1]);
+	}
+
+	/**
+	 * https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param prices
+	 * @return
+	 */
+	public int maxProfit(int[] prices) {
+		int[][] dp = new int[prices.length][3];
+		dp[0][0] = -prices[0];
+		dp[0][1] = 0;
+		dp[0][2] = 0;
+		for (int i = 1; i < prices.length; i++) {
+			// 要么不操作，要么从冷静期买入。
+			dp[i][0] = Math.max(dp[i-1][0], dp[i-1][2] - prices[i]);
+			dp[i][1] = dp[i-1][0] + prices[i];
+			dp[i][2] = Math.max(dp[i-1][1], dp[i-1][2]);
+		}
+		return Math.max(dp[prices.length-1][1], dp[prices.length-1][2]);
 	}
 
 
