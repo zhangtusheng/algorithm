@@ -44,11 +44,79 @@ public class DpMain2024 {
 
 //		System.out.println(dpMain2024.longestPalindromeSubseq("bbbab"));
 //		System.out.println(dpMain2024.minDistance("distance", "springbok"));
-		System.out.println(dpMain2024.minimumDeleteSum("sea", "eat"));
-		System.out.println(dpMain2024.minimumDeleteSum("delete", "leet"));
+//		System.out.println(dpMain2024.minimumDeleteSum("sea", "eat"));
+//		System.out.println(dpMain2024.minimumDeleteSum("delete", "leet"));
+
+//		System.out.println(dpMain2024.lengthOfLIS(new int[]{10, 9, 2, 5, 3, 7, 101, 18}));
+//		System.out.println(dpMain2024.lengthOfLIS(new int[]{4, 10, 4, 3, 8, 9}));
+
+		System.out.println(dpMain2024.findNumberOfLIS(new int[]{1, 3, 5, 4, 7}));
+		System.out.println(dpMain2024.findNumberOfLIS(new int[]{2, 2, 2, 2, 2}));
 
 
 
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/number-of-longest-increasing-subsequence/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param nums
+	 * @return
+	 */
+	public int findNumberOfLIS(int[] nums) {
+		int[] dp = new int[nums.length];
+		int n = nums.length;
+		for (int i = 0; i < n; i++) {
+			dp[i] = 1;
+		}
+		for (int i = 1; i < n; i++) {
+			for (int j = 0; j < i ; j++) {
+				if (nums[i] >= nums[j]) {
+					dp[i] = Math.max(dp[i], dp[j] + 1);
+				}
+			}
+		}
+		int max = 1;
+		for (int i = 0; i < n; i++) {
+			max = Math.max(max, dp[i]);
+		}
+		int ans = 0;
+		for (int i = 0; i < n; i++) {
+			if (dp[i] == max - 1) {
+				for (int j = i + 1; j < n; j++) {
+					if (nums[i] <= nums[j]) {
+						ans++;
+					}
+				}
+			}
+		}
+		return ans;
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/longest-increasing-subsequence/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param nums
+	 * @return
+	 */
+	public int lengthOfLIS(int[] nums) {
+		int[] dp = new int[nums.length];
+		int n = nums.length;
+		for (int i = 0; i < n; i++) {
+			dp[i] = 1;
+		}
+		for (int i = 1; i < n; i++) {
+			for (int j = 0; j < i ; j++) {
+				if (nums[i] > nums[j]) {
+					dp[i] = Math.max(dp[i], dp[j] + 1);
+				}
+			}
+		}
+		int max = 1;
+		for (int i = 0; i < n; i++) {
+			max = Math.max(max, dp[i]);
+		}
+		return max;
 	}
 
 	/**
