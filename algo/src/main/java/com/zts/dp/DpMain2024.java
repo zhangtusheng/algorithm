@@ -1,11 +1,11 @@
 package com.zts.dp;
 
-import com.zts.everyday.FrontMiddleBackQueue;
-import com.zts.everyday.Main202311;
-
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -50,13 +50,160 @@ public class DpMain2024 {
 //		System.out.println(dpMain2024.lengthOfLIS(new int[]{10, 9, 2, 5, 3, 7, 101, 18}));
 //		System.out.println(dpMain2024.lengthOfLIS(new int[]{4, 10, 4, 3, 8, 9}));
 
-		System.out.println(dpMain2024.findNumberOfLIS(new int[]{1, 3, 5, 4, 7}));
-		System.out.println(dpMain2024.findNumberOfLIS(new int[]{2, 2, 2, 2, 2}));
+//		System.out.println(dpMain2024.findNumberOfLIS(new int[]{1, 3, 5, 4, 7}));
+//		System.out.println(dpMain2024.findNumberOfLIS(new int[]{2, 2, 2, 2, 2}));
 
+//		System.out.println(dpMain2024.longestSubsequence(new int[] {1, 2, 3, 4, 5}, 1));
+//		System.out.println(dpMain2024.longestSubsequence(new int[] {1, 3, 5, 7}, 1));
+//		System.out.println(dpMain2024.longestSubsequence(new int[] {1, 5, 7, 8, 5, 3, 4, 2, 1}, -2));
+//		System.out.println(dpMain2024.longestArithSeqLength(new int[] {3, 6, 9, 12}));
+//		System.out.println(dpMain2024.maxEnvelopes(new int[][] {{5, 4}, {6, 4}, {6, 7}, {2, 3}}));
+//		System.out.println(dpMain2024.maxEnvelopes(new int[][] {{1,1}, {1,1}, {1,1}}));
+//		System.out.println(dpMain2024.findLongestChain(new int[][]{{1,2}, {2,3}, {3,4}}));
 
+		System.out.println(dpMain2024.longestCommonSubsequence("abcde", "ace"));
 
 	}
 
+
+	/**
+	 * https://leetcode.cn/problems/longest-common-subsequence/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param text1
+	 * @param text2
+	 * @return
+	 */
+	public int longestCommonSubsequence(String text1, String text2) {
+		int m = text1.length();
+		int n = text2.length();
+		int[][] dp = new int[m+1][n+1];
+		for (int i = 1; i <= m; i++) {
+			for (int j = 1; j <= n; j++) {
+				if (text1.charAt(i-1) == text2.charAt(j-1)) {
+					dp[i][j] = dp[i-1][j-1] + 1;
+				} else {
+					dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+				}
+			}
+		}
+		return dp[m][n];
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/maximum-length-of-pair-chain/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param pairs
+	 * @return
+	 */
+	public int findLongestChain(int[][] pairs) {
+		int n = pairs.length;
+		Arrays.sort(pairs, (a,b) -> {
+			if (a[0] == b[0]) {
+				return a[1] - b[1];
+			} else {
+				return a[0] - b[0];
+			}
+		});
+		int[] dp = new int[n];
+		Arrays.fill(dp, 1);
+		int max = 1;
+		for (int i = 1; i < n; i++) {
+			for (int j = 0; j < i; j++) {
+				if (pairs[i][0] > pairs[j][1]) {
+					dp[i] = Math.max(dp[i], dp[j] + 1);
+				}
+				max = Math.max(max, dp[i]);
+			}
+		}
+		return max;
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/russian-doll-envelopes/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param envelopes
+	 * @return
+	 */
+	public int maxEnvelopes(int[][] envelopes) {
+		Arrays.sort(envelopes, (a, b) -> {
+			if (a[0] == b[0]) {
+				return b[1] - a[1];
+			} else {
+				return a[0] - b[0];
+			}
+		});
+		List<Integer> f = new ArrayList<>();
+		f.add(envelopes[0][1]);
+		for (int i = 1; i < envelopes.length; i++) {
+			int num = envelopes[i][1];
+			if (num > f.get(f.size() - 1)) {
+				f.add(num);
+			} else {
+				int index = binarySearch(f, num);
+				f.set(index, num);
+			}
+
+		}
+		return f.size();
+	}
+	// 二分法来查找在范围start, end内，envelop[i][0] < target[0] && envelop[i][1] < target[1]的最大值。
+	public int binarySearch(List<Integer> f, int target) {
+		int left = 0;
+		int right = f.size() - 1;
+		while (left < right) {
+			int mid = (right - left) / 2 + left;
+			if (f.get(mid) < target) {
+				left = mid + 1;
+			} else {
+				right = mid;
+			}
+		}
+		return left;
+	}
+
+	/**
+	 * https://leetcode.cn/problems/longest-arithmetic-subsequence/description/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param nums：枚举所有的差值，然后利用map存储当前节点的最大值。
+	 * @return
+	 */
+	public int longestArithSeqLength(int[] nums) {
+		int n = nums.length;
+		int ans = 0;
+		// 查询两者的最大差值。
+		int max = Arrays.stream(nums).max().getAsInt();
+		int min = Arrays.stream(nums).min().getAsInt();
+		int diff = max - min;
+		for (int i = -diff; i <= diff; i++) {
+			int difference = i;
+			Map<Integer, Integer> map = new HashMap<>();
+			for (int v : nums) {
+				int u = v - difference;
+				// 如果u存在的话，就存当前节点。如果不存在就存储1就好了。
+				map.put(v, map.getOrDefault(u, 0) + 1);
+				ans = Math.max(ans, map.get(v));
+			}
+		}
+		return ans;
+	}
+
+	/**
+	 * https://leetcode.cn/problems/longest-arithmetic-subsequence-of-given-difference/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param arr: 其实当前节点如果定了话，那么就能从这个节点开始找到前一个节点的指针。
+	 * @param difference
+	 * @return
+	 */
+	public int longestSubsequence(int[] arr, int difference) {
+		Map<Integer, Integer> map = new HashMap<>();
+		int ans = 0;
+		// 对于当前节点来说，我们只需要保证v-difference的节点存在，并且是最大的，就能保证当前节点v也是最大的。
+		for (int v : arr) {
+			int u = v -difference;
+			// 如果u存在的话，就存当前节点。如果不存在就存储1就好了。
+			map.put(v, map.getOrDefault(u, 0) + 1);
+			ans = Math.max(ans, map.get(v));
+		}
+		return ans;
+
+	}
 
 	/**
 	 * https://leetcode.cn/problems/number-of-longest-increasing-subsequence/?envType=study-plan-v2&envId=dynamic-programming

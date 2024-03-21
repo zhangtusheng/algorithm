@@ -8,7 +8,9 @@ package com.zts.find;
 public class Main {
 
     public static void main(String[] args) {
-
+        System.out.println(new Finder<Integer>(new Integer[] {1, 2, 3, 4, 5, 5, 5, 5, 9, 10}).binarySearchFirstEqual(5));
+        System.out.println(new Finder<Integer>(new Integer[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}).binarySearchFirstGreater(5));
+        System.out.println(new Finder<Integer>(new Integer[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}).binarySearchFirstLess(5));
     }
 
 
