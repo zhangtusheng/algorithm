@@ -1,8 +1,12 @@
 package com.zts.dp;
 
-import com.alibaba.fastjson.JSON;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author zts
@@ -66,7 +70,31 @@ public class DpMain2024 {
 //		System.out.println(JSON.toJSONString(dpMain2024.longestObstacleCourseAtEachPosition(new int[]{1,2,3,2})));
 //		System.out.println(dpMain2024.maxProfit(new int[]{1, 2, 3, 0, 2}));
 //		System.out.println(dpMain2024.maxProfit(new int[]{1}));
-		System.out.println(dpMain2024.maxProfit(new int[]{1, 3, 2, 8, 4, 9}, 2));
+//		System.out.println(dpMain2024.maxProfit(new int[]{1, 3, 2, 8, 4, 9}, 2));
+		System.out.println(dpMain2024.numTrees(4));
+		System.out.println(dpMain2024.numTrees(5));
+		System.out.println(dpMain2024.numTrees(3));
+		System.out.println(dpMain2024.numTrees(6));
+
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/unique-binary-search-trees/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param n
+	 * @return
+	 */
+	public int numTrees(int n) {
+		int[] dp = new int[n + 1];
+		dp[0] = 1;
+		dp[1] = 1;
+		// 如果长度是i，枚举每个以j为跟节点的情况。然后对应的左右子树的个数相乘。因为是搜索树，所以我们知道左子树的个数是j-1，右子树的个数是i-j。
+		for (int i = 2; i <= n; i++) {
+			for (int j = 1; j <= i ; j++) {
+				dp[i] = dp[i] + dp[j - 1] * dp[i - j];
+			}
+		}
+		return dp[n];
 
 	}
 
