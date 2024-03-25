@@ -72,8 +72,33 @@ public class DpMain2024 {
 //		System.out.println(dpMain2024.numTrees(3));
 //		System.out.println(dpMain2024.numTrees(6));
 //		System.out.println(dpMain2024.numSquares(11));
-		System.out.println(dpMain2024.change(5, new int[]{1, 2, 5}));
+//		System.out.println(dpMain2024.change(5, new int[]{1, 2, 5}));
+		System.out.println(dpMain2024.combinationSum4(new int[]{1, 2, 3}, 4));
 
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/combination-sum-iv/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param nums
+	 * @param target
+	 * @return
+	 */
+	public int combinationSum4(int[] nums, int target) {
+		Arrays.sort(nums);
+		int[][] dp = new int[nums.length + 1][target + 1];
+		dp[0][0] = 1;
+		for (int i = 1; i <= nums.length ; i++) {
+			dp[i][0] = 1;
+			for (int j = 1; j <= target ; j++) {
+				if (j - nums[i-1] >= 0) {
+					dp[i][j] = dp[i-1][j] + dp[i][j- nums[i-1]];
+ 				}else {
+					dp[i][j] = dp[i-1][j];
+				}
+			}
+		}
+		return dp[nums.length][target];
 	}
 
 	/**
@@ -83,17 +108,20 @@ public class DpMain2024 {
 	 * @r几点eturn
 	 */
 	public int change(int amount, int[] coins) {
-		int[] dp = new int[amount + 1];
-		dp[0] = 1;
+		int[][] dp = new int[coins.length + 1][amount + 1];
+		dp[0][0] = 1;
 		Arrays.sort(coins);
-		for (int i = 1; i <= amount ; i++) {
-			for (int j = 0; j < coins.length ; j++) {
-				for (int k = 0; k * coins[j] <= i ; k++) {
-					dp[i] += dp[i - k * coins[j]];
+		for (int i = 1; i <= coins.length; i++) {
+			dp[i][0] = 1;
+			for (int j = 1; j <= amount ; j++) {
+				if (j - coins[i - 1] >= 0) {
+					dp[i][j] = dp[i - 1][j] + dp[i][j - coins[i - 1]];
+				} else {
+					dp[i][j] = dp[i - 1][j];
 				}
 			}
 		}
-		return dp[amount];
+		return dp[coins.length][amount];
 	}
 
 	/**
