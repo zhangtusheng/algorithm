@@ -1,8 +1,15 @@
 package com.zts.dp;
 
-import com.zts.model.TreeNode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.*;
+import com.zts.model.TreeNode;
 
 /**
  * @author zts
@@ -73,6 +80,7 @@ public class DpMain2024 {
 //		System.out.println(dpMain2024.numTrees(6));
 //		System.out.println(dpMain2024.numSquares(11));
 //		System.out.println(dpMain2024.change(5, new int[]{1, 2, 5}));
+		System.out.println(dpMain2024.combinationSum4(new int[]{9}, 3));
 		System.out.println(dpMain2024.combinationSum4(new int[]{1, 2, 3}, 4));
 
 	}
@@ -86,20 +94,22 @@ public class DpMain2024 {
 	 */
 	public int combinationSum4(int[] nums, int target) {
 		Arrays.sort(nums);
-		int[][] dp = new int[nums.length + 1][target + 1];
-		dp[0][0] = 1;
-		for (int i = 1; i <= nums.length ; i++) {
-			dp[i][0] = 1;
-			for (int j = 1; j <= target ; j++) {
-				if (j - nums[i-1] >= 0) {
-					dp[i][j] = dp[i-1][j] + dp[i][j- nums[i-1]];
- 				}else {
-					dp[i][j] = dp[i-1][j];
+		int[] dp = new int[target + 1];
+		if (target < nums[0]) {
+			return 0;
+		}
+		dp[0] = 1;
+		for (int i = 1; i <= target; i++) {
+			for (int j = 0; j < nums.length; j++) {
+				if (i >= nums[j]) {
+					dp[i] += dp[i - nums[j]];
 				}
 			}
 		}
-		return dp[nums.length][target];
+		return dp[target];
+
 	}
+
 
 	/**
 	 * https://leetcode.cn/problems/coin-change-ii/?envType=study-plan-v2&envId=dynamic-programming
