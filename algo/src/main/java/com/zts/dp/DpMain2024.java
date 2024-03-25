@@ -1,12 +1,8 @@
 package com.zts.dp;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.zts.model.TreeNode;
+
+import java.util.*;
 
 /**
  * @author zts
@@ -71,12 +67,157 @@ public class DpMain2024 {
 //		System.out.println(dpMain2024.maxProfit(new int[]{1, 2, 3, 0, 2}));
 //		System.out.println(dpMain2024.maxProfit(new int[]{1}));
 //		System.out.println(dpMain2024.maxProfit(new int[]{1, 3, 2, 8, 4, 9}, 2));
-		System.out.println(dpMain2024.numTrees(4));
-		System.out.println(dpMain2024.numTrees(5));
-		System.out.println(dpMain2024.numTrees(3));
-		System.out.println(dpMain2024.numTrees(6));
+//		System.out.println(dpMain2024.numTrees(4));
+//		System.out.println(dpMain2024.numTrees(5));
+//		System.out.println(dpMain2024.numTrees(3));
+//		System.out.println(dpMain2024.numTrees(6));
+//		System.out.println(dpMain2024.numSquares(11));
+		System.out.println(dpMain2024.change(5, new int[]{1, 2, 5}));
 
 	}
+
+	/**
+	 * https://leetcode.cn/problems/coin-change-ii/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param amount
+	 * @param coins
+	 * @r几点eturn
+	 */
+	public int change(int amount, int[] coins) {
+		int[] dp = new int[amount + 1];
+		dp[0] = 1;
+		Arrays.sort(coins);
+		for (int i = 1; i <= amount ; i++) {
+			for (int j = 0; j < coins.length ; j++) {
+				for (int k = 0; k * coins[j] <= i ; k++) {
+					dp[i] += dp[i - k * coins[j]];
+				}
+			}
+		}
+		return dp[amount];
+	}
+
+	/**
+	 * https://leetcode.cn/problems/perfect-squares/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param n:平方整数：通常是用来判断一个数是否为平方数的。
+	 * @return
+	 */
+	public int numSquares(int n) {
+		int[] f =  new int[n+1];
+		for (int i = 1; i <= n ; i++) {
+			int minn = Integer.MAX_VALUE;
+			for (int j = 1; j * j <= i; j++) {
+
+				// 所以数的区间只会出现在1，sqrt（i）之间。
+				minn = Math.min(minn, f[i - j * j]);
+			}
+			// 表示在最小的数上加1
+			f[i] = minn + 1;
+		}
+		return f[n];
+	}
+
+
+	int maxSum = Integer.MAX_VALUE;
+	/**
+	 * https://leetcode.cn/problems/binary-tree-maximum-path-sum/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param root： 构造结点关系。就是从当前结点直接相连的。
+	 * @return
+	 */
+	public int maxPathSum(TreeNode root) {
+		maxGain(root);
+		return maxSum;
+	}
+
+	public int maxGain(TreeNode root) {
+		if (root == null) {
+			return 0;
+		}
+		int leftGain = Math.max(maxGain(root.left), 0);
+		int rightGain = Math.max(maxGain(root.right), 0);
+		int priceNewPath = root.val + leftGain + rightGain;
+		maxSum = Math.max(maxSum, priceNewPath);
+		// 当前结点为根结点的最大路径和。
+		return root.val + Math.max(leftGain, rightGain);
+	}
+
+
+	public int rob(TreeNode root) {
+		if (root == null) {
+			return 0;
+		}
+
+		// 优先计算左边的东西，然后在计算右边的东西。
+		NewTreeNode dfs = dfs(root);
+		return Math.max(dfs.value1, dfs.value2);
+
+	}
+
+	private NewTreeNode dfs(TreeNode root) {
+		if (root == null) {
+			return new NewTreeNode(0, 0);
+		}
+		NewTreeNode left = dfs(root.left);
+		NewTreeNode right = dfs(root.right);
+		NewTreeNode res = new NewTreeNode();
+		res.value1 = root.val + left.value2 + right.value2;
+		res.value2 = Math.max(left.value1, left.value2) + Math.max(right.value1, right.value2);
+		return res;
+	}
+
+
+	private static class NewTreeNode {
+		int value1;
+		int value2;
+		public NewTreeNode(int value1, int value2) {
+			this.value1 = value1;
+			this.value2 = value2;
+		}
+		public NewTreeNode() {
+		}
+	}
+
+
+
+
+	/**
+	 * https://leetcode.cn/problems/unique-binary-search-trees-ii/description/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param n
+	 * @return
+	 */
+	public List<TreeNode> generateTrees(int n) {
+		if (n == 0) {
+			return new ArrayList<>();
+		}
+		List<TreeNode> res = new ArrayList<>();
+		return buildTreeNode(1, n);
+	}
+
+	public List<TreeNode> buildTreeNode(int start, int end) {
+		List<TreeNode> allTrees = new LinkedList<>();
+		if (start > end) {
+			allTrees.add(null);
+			return allTrees;
+		}
+
+		// 枚举根节点
+		for (int i = start; i <= end ; i++) {
+			List<TreeNode> leftTrees = buildTreeNode(start, i - 1);
+			List<TreeNode> rightTrees = buildTreeNode(i + 1, end);
+
+			// 将两者进行组合。
+			for (TreeNode left : leftTrees) {
+				for (TreeNode right : rightTrees) {
+					TreeNode cur = new TreeNode(i);
+					cur.left = left;
+					cur.right = right;
+					allTrees.add(cur);
+				}
+			}
+		}
+		return allTrees;
+	}
+
+
 
 
 	/**
