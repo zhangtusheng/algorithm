@@ -81,12 +81,58 @@ public class DpMain2024 {
 //		System.out.println(dpMain2024.numSquares(11));
 //		System.out.println(dpMain2024.change(5, new int[]{1, 2, 5}));
 //		System.out.println(dpMain2024.combinationSum4(new int[]{9}, 3));
+//		System.out.println(dpMain2024.combinationSum4(new int[]{1, 2, 3}, 4));
+//		System.out.println(dpMain2024.combinationSum4(new int[]{9}, 3));
 //		System.out.println(dpMain2024.combinationSum4(new int[]{1, 2, 3}, 4));\
 //		System.out.println(dpMain2024.findMaxForm(new String[]{"10", "0001", "111001", "1", "0"}, 5, 3));
 //		System.out.println(dpMain2024.findMaxForm(new String[]{"10", "0", "1"}, 1, 1));
 //		System.out.println(dpMain2024.coinChange(new int[]{1, 2, 5}, 11));
-		System.out.println(dpMain2024.countGoodStrings(3, 3, 1,1));
+//		System.out.println(dpMain2024.countGoodStrings(3, 3, 1,1));
+		System.out.println(dpMain2024.numDecodings("12"));
+		System.out.println(dpMain2024.numDecodings("226"));
+		System.out.println(dpMain2024.numDecodings("06"));
+		System.out.println(dpMain2024.numDecodings("2101"));
+		System.out.println(dpMain2024.numDecodings("10011"));
+		System.out.println(dpMain2024.numDecodings("230"));
 
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/decode-ways/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param s
+	 * @return
+	 */
+	public int numDecodings(String s) {
+		int[] dp = new int[s.length() + 1];
+		dp[0] = 1;
+		if (s.charAt(0) == '0') {
+			return 0;
+		}
+		char[] charArray = s.toCharArray();
+		for (int i = 1; i <= s.length() ; i++) {
+			char c = s.charAt(i - 1);
+			if (i - 1 == 0) {
+				dp[i] = dp[i-1];
+			}else if (c == '0') {
+				if (charArray[i-2] == '0') {
+					return 0;
+				}
+				int num = Integer.parseInt(s.substring(i-2, i));
+				if (num > 26) {
+					return 0;
+				}
+				dp[i] = dp[i-2];
+			} else {
+				int nums = Integer.parseInt(s.substring(i-2, i));
+				if (nums <= 26 && s.charAt(i - 2) != '0') {
+					dp[i] = dp[i-1] + dp[i-2];
+				} else {
+					dp[i] = dp[i - 1];
+				}
+			}
+		}
+		return dp[s.length()];
 	}
 
 
@@ -131,7 +177,6 @@ public class DpMain2024 {
 		}
 		return dp[amount] == amount + 1 ? -1 : dp[amount];
 	}
-
 
 
 
