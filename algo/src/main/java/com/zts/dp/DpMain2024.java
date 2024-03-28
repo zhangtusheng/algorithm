@@ -80,9 +80,113 @@ public class DpMain2024 {
 //		System.out.println(dpMain2024.numTrees(6));
 //		System.out.println(dpMain2024.numSquares(11));
 //		System.out.println(dpMain2024.change(5, new int[]{1, 2, 5}));
-		System.out.println(dpMain2024.combinationSum4(new int[]{9}, 3));
-		System.out.println(dpMain2024.combinationSum4(new int[]{1, 2, 3}, 4));
+//		System.out.println(dpMain2024.combinationSum4(new int[]{9}, 3));
+//		System.out.println(dpMain2024.combinationSum4(new int[]{1, 2, 3}, 4));\
+//		System.out.println(dpMain2024.findMaxForm(new String[]{"10", "0001", "111001", "1", "0"}, 5, 3));
+//		System.out.println(dpMain2024.findMaxForm(new String[]{"10", "0", "1"}, 1, 1));
+//		System.out.println(dpMain2024.coinChange(new int[]{1, 2, 5}, 11));
+		System.out.println(dpMain2024.countGoodStrings(3, 3, 1,1));
 
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/count-ways-to-build-good-strings/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param low
+	 * @param high
+	 * @param zero
+	 * @param one
+	 * @return
+	 */
+	public int countGoodStrings(int low, int high, int zero, int one) {
+		int mod = (int)1e9 + 7;
+		int[] f = new int[high + 1];
+		f[0] = 1;
+		int ans = 0;
+		for (int i = 1; i <= high; i++) {
+			if (i >= one) f[i] = (f[i] + f[i - one]) % mod;
+			if (i >= zero) f[i] = (f[i] + f[i - zero]) % mod;
+			if (i >= low) ans = (ans + f[i]) % mod;
+		}
+		return ans;
+	}
+
+	/**
+	 * https://leetcode.cn/problems/coin-change/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param coins
+	 * @param amount
+	 * @return
+	 */
+	public int coinChange(int[] coins, int amount) {
+		int[] dp = new int[amount + 1];
+		Arrays.fill(dp, amount + 1);
+		dp[0] = 0;
+		for (int i = 1; i <= amount; i++) {
+			for (int coin : coins) {
+				if (i - coin < 0) {
+					continue;
+				}
+				dp[i] = Math.min(dp[i], 1 + dp[i - coin]);
+			}
+		}
+		return dp[amount] == amount + 1 ? -1 : dp[amount];
+	}
+
+
+
+
+	/**
+	 * https://leetcode.cn/problems/solving-questions-with-brainpower/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param questions
+	 * @return
+	 */
+	public long mostPoints(int[][] questions) {
+		int n = questions.length;
+		long[] f = new long[n + 1];
+		for (int i = n - 1; i >= 0; --i) {
+			int[] q = questions[i];
+			int j = i + q[1] + 1;
+			f[i] = Math.max(f[i + 1], q[0] + (j < n ? f[j] : 0));
+		}
+		return f[0];
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/ones-and-zeroes/?envType=study-plan-v2&envId=dynamic-programming
+	 * @param strs
+	 * @param m
+	 * @param n
+	 * @return
+	 */
+	public int findMaxForm(String[] strs, int m, int n) {
+		int[][] ans = new int[strs.length][2];
+		for (int i = 0; i < strs.length; i++) {
+			int[] count = count(strs[i]);
+			ans[i][0] = count[0];
+			ans[i][1] = count[1];
+		}
+		int[][][] dp = new int[strs.length + 1][m + 1][n + 1];
+		for (int i = 1; i<= strs.length; i++) {
+			for (int j = 0; j <= m ; j++) {
+				for (int k = 0; k <= n ; k++) {
+					if (j >= ans[i - 1][0] && k >= ans[i - 1][1]) {
+						dp[i][j][k] = Math.max(dp[i - 1][j][k], dp[i - 1][j - ans[i - 1][0]][k - ans[i - 1][1]] + 1);
+					} else {
+						dp[i][j][k] = dp[i - 1][j][k];
+					}
+				}
+			}
+		}
+		return dp[strs.length][m][n];
+	}
+
+	public int[] count(String str) {
+		int[] res = new int[2];
+		for (int i = 0; i < str.length(); i++) {
+			res[str.charAt(i) - '0']++;
+		}
+		return res;
 	}
 
 
