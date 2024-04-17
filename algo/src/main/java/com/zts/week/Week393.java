@@ -34,6 +34,11 @@ public class Week393 {
 	 * @return
 	 */
 	public long findKthSmallest(int[] coins, int k) {
+		return extracted(coins, k);
+	}
+
+	// 暴力+模拟的+优先队列的方式，超时。
+	private static long extracted(int[] coins, int k) {
 		Map<Long, Long> map = new HashMap<>();
 		Queue<NodeT> queue = new PriorityQueue<>((a, b) -> {
 			return Math.toIntExact(a.current - b.current);
@@ -46,6 +51,8 @@ public class Week393 {
 		while (i < k) {
 			NodeT poll = queue.poll();
 			if (map.containsKey(poll.current)) {
+				NodeT nodeT = new NodeT(poll.current + poll.indexValue, poll.indexValue);
+				queue.offer(nodeT);
 				continue;
 			}
 			i++;
