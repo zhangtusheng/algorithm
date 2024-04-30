@@ -21,6 +21,23 @@ public class Main202404 {
 		System.out.println(JSON.toJSONString(main202404.reverseKGroup(ListNode.createListNode(new int[] { 1, 2}), 2)));
 	}
 
+
+	/**
+	 * https://leetcode.cn/problems/number-of-employees-who-met-the-target/?envType=daily-question&envId=2024-04-30
+	 * @param hours
+	 * @param target
+	 * @return
+	 */
+	public int numberOfEmployeesWhoMetTarget(int[] hours, int target) {
+		int result = 0;
+		for (int hour : hours) {
+			if (hour >= target) {
+				result++;
+			}
+		}
+		return result;
+	}
+
 	/**
 	 * K链表反转。
 	 * @param head
