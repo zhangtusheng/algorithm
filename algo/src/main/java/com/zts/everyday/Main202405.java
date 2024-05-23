@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.alibaba.fastjson.JSON;
 import com.zts.model.ListNode;
 
 /**
@@ -120,7 +119,13 @@ public class Main202405 {
 //		System.out.println(nums);
 //		System.out.println(main202405.removeDuplicates(new int[] {1,1,1,2,2,3}));
 
-		System.out.println(JSON.toJSONString(main202405.subsetsWithDup(new int[]{1, 2, 2})));
+//		System.out.println(JSON.toJSONString(main202405.subsetsWithDup(new int[]{1, 2, 2})));
+
+		System.out.println(main202405.isInterleave("aabcc", "dbbca", "aadbbcbcac"));
+		System.out.println(main202405.isInterleave("abababababababababababababababababababababababababababababababababababababababababababababababababbb",
+			"babababababababababababababababababababababababababababababababababababababababababababababababaaaba",
+			"abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababbb"
+		));
 
 	}
 
@@ -132,9 +137,58 @@ public class Main202405 {
 	 * @param s3
 	 * @return
 	 */
+	boolean isInterLeaveFlag;
 	public boolean isInterleave(String s1, String s2, String s3) {
+		isInterLeaveFlag = false;
+		if (s1.length() + s2.length() != s3.length()) {
+			return isInterLeaveFlag;
+		}
+		dfsString(s1, 0, s2, 0, s3, 0);
+		return isInterLeaveFlag;
+	}
+
+	private void dfsString(String s1, String s2, String s3) {
+		boolean[][][] dp = new boolean[s3.length() + 1][s1.length() + 1][s2.length() + 1];
+		if (s1.charAt(0) == s3.charAt(0)) {
+			dp[1][1][0] = true;
+		}
+		if (s2.charAt(0) == s3.charAt(0)) {
+			dp[1][0][1] = true;
+		}
+		for (int i = 1; i <= s3.length(); i++) {
+			for (int j = 1; j <= i; j++) {
+				for (int k = 1; k <= i - j; k++) {
+					if (s1.charAt(j - 1) == s3.charAt(i-1)) {
+					}
+				}
+			}
+		}
 
 	}
+
+	private void dfsString(String s1, int index1, String s2, int index2, String s3, int index3) {
+		if (isInterLeaveFlag) {
+			return;
+		}
+		if (index3 == s3.length()) {
+			isInterLeaveFlag = true;
+			return;
+		}
+
+		// 边界条件。
+		if (index1 + index2 >= s3.length()) {
+			return;
+		}
+
+		if (index1 < s1.length() && s1.charAt(index1) == s3.charAt(index3)) {
+			dfsString(s1, index1 + 1, s2, index2, s3, index3 + 1);
+		}
+
+		if (index2 < s2.length() && s2.charAt(index2) == s3.charAt(index3)) {
+			dfsString(s1, index1, s2, index2 + 1, s3, index3 + 1);
+		}
+	}
+
 
 
 	/**
