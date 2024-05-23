@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSON;
 import com.zts.model.ListNode;
 
 /**
@@ -121,14 +122,75 @@ public class Main202405 {
 
 //		System.out.println(JSON.toJSONString(main202405.subsetsWithDup(new int[]{1, 2, 2})));
 
-		System.out.println(main202405.isInterleave("aabcc", "dbbca", "aadbbcbcac"));
-		System.out.println(main202405.isInterleave("abababababababababababababababababababababababababababababababababababababababababababababababababbb",
-			"babababababababababababababababababababababababababababababababababababababababababababababababaaaba",
-			"abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababbb"
-		));
+//		System.out.println(main202405.isInterleave("aabcc", "dbbca", "aadbbcbcac"));
+//		System.out.println(main202405.isInterleave("abababababababababababababababababababababababababababababababababababababababababababababababababbb",
+//			"babababababababababababababababababababababababababababababababababababababababababababababababaaaba",
+//			"abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababbb"
+//		));
+
+		int[] nums = {1, 2, 3};
+//		main202405.nextPermutation(nums);
+//		System.out.println(JSON.toJSONString(nums));
+
+		nums = new int[]{1, 2, 3,4,5};
+		main202405.nextPermutation(nums);
+		System.out.println(JSON.toJSONString(nums));
+
+		nums = new int[]{1, 3, 2};
+		main202405.nextPermutation(nums);
+		System.out.println(JSON.toJSONString(nums));
+
+		nums = new int[]{1, 2, 3};
+		main202405.nextPermutation(nums);
+		System.out.println(JSON.toJSONString(nums));
+
+		nums = new int[]{3, 2, 1};
+		main202405.nextPermutation(nums);
+		System.out.println(JSON.toJSONString(nums));
 
 	}
 
+	boolean isEnd = false;
+	boolean flag = false;
+	Set<String> set = new HashSet<>();
+
+	/**
+	 * https://leetcode.cn/problems/next-permutation/
+	 * @param nums
+	 */
+	public void nextPermutation(int[] nums) {
+
+		// 可以通过推算来进行计算的。下一个数字一定比当前的大，那么我们要找一个尽可能比这个大的，但是涨幅要小一点的，也就是要从后往前找一个比当前小的数子进行交换。
+		int i = nums.length - 2;
+		while (i >= 0 && nums[i] >= nums[i + 1]) {
+			i--;
+		}
+		if (i >= 0) {
+			int j = nums.length - 1;
+			while (j >= 0 && nums[i] >= nums[j]) {
+				j--;
+			}
+			swap(nums, i, j);
+		}
+		reverse(nums, i + 1);
+
+	}
+
+	private void reverse(int[] nums, int start) {
+		int left = start;
+		int right = nums.length - 1;
+		while (left < right) {
+			swap(nums, left, right);
+			left++;
+			right--;
+		}
+	}
+
+	private void swap(int[] nums, int i, int j) {
+		int temp = nums[i];
+		nums[i] = nums[j];
+		nums[j] = temp;
+	}
 
 	/**
 	 * https://leetcode.cn/problems/interleaving-string/
@@ -635,6 +697,47 @@ public class Main202405 {
 			}
 		}
 		return true;
+
+	}
+
+	public void dfs(int[] nums, int[] sortNums, int length, boolean[] used, List<Integer> path, List<Integer> result, boolean flag) {
+		if (length == nums.length) {
+			List<String> stringPath = new ArrayList<>();
+			for (Integer i : path) {
+				stringPath.add(i.toString());
+			}
+			if (Arrays.equals(nums, path.stream().mapToInt(Integer::intValue).toArray())) {
+				flag = true;
+			} else if (flag) {
+				if (set.contains(String.join(",", stringPath.toArray(new String[0])))) {
+					return;
+				}
+				// 记录当前结果。
+				result.addAll(new ArrayList<>(path));
+				isEnd = true;
+			}
+			set.add(String.join(",", stringPath.toArray(new String[0])));
+			return;
+		}
+		for (int i = 0; i < sortNums.length; i++) {
+			if (isEnd) {
+				return;
+			}
+			if (used[i]) {
+				continue;
+			}
+			if (nums[length] < sortNums[i]) {
+				continue;
+			}
+			if (nums[length] > sortNums[i]) {
+				flag = true;
+			}
+			used[i] = true;
+			path.add(sortNums[i]);
+			dfs(nums, sortNums, length + 1, used, path, result, flag);
+			used[i] = false;
+			path.remove(path.size() - 1);
+		}
 	}
 
 
