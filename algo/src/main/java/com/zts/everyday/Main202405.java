@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSON;
 import com.zts.model.ListNode;
 
 /**
@@ -95,8 +96,438 @@ public class Main202405 {
 //			{'1','1','1','1','1','1','1','0','1','1','1','1','1','0','1'}
 //		}));
 
+//		System.out.println(main202405.getPermutation(3, 3));
+
+//		System.out.println(main202405.spiralOrder(new int[][]{{1,2,3,4},{5,6,7,8},{9,10,11,12}}));
+
+//		System.out.println(JSON.toJSONString(main202405.generateMatrix(3)));
+
+//		int[] nums = {2, 0, 2, 1, 1, 0};
+//		main202405.sortColors(nums);
+//		System.out.println(JSON.toJSONString(nums));
+
+//		System.out.println(JSON.toJSONString(main202405.combine(3, 3)));
+//		System.out.println(JSON.toJSONString(main202405.combine(4, 2)));
+
+//		System.out.println(JSON.toJSONString(main202405.subsets(new int[]{1,2, 3})));
+
+//		System.out.println(JSON.toJSONString(main202405.exist(new char[][]{{'A','B','C','E'},{'S','F','C','S'},{'A','D','E','E'}},"ABCCED")));
+//		System.out.println(JSON.toJSONString(main202405.exist(new char[][]{{'A','B','C','E'},{'S','F','C','S'},{'A','D','E','E'}},"ABCB")));
+
+//		int[] nums = {0, 0, 1, 1, 1, 1, 2, 3, 3};
+//		int i = main202405.removeDuplicates(nums);
+//		System.out.println(i);
+//		System.out.println(nums);
+//		System.out.println(main202405.removeDuplicates(new int[] {1,1,1,2,2,3}));
+
+		System.out.println(JSON.toJSONString(main202405.subsetsWithDup(new int[]{1, 2, 2})));
+
+	}
 
 
+	/**
+	 * https://leetcode.cn/problems/interleaving-string/
+	 * @param s1
+	 * @param s2
+	 * @param s3
+	 * @return
+	 */
+	public boolean isInterleave(String s1, String s2, String s3) {
+
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/subsets-ii/
+	 * @param nums
+	 * @return
+	 *
+	 *
+	 */
+	Map<String, String> existMap = new HashMap<>();
+	public List<List<Integer>> subsetsWithDup(int[] nums) {
+		List<List<Integer>> result = new ArrayList<>();
+		result.add(new ArrayList<>());
+
+		existMap = new HashMap<>();
+		// 枚举起点。
+		for (int i = 0; i < nums.length; i++) {
+			// 枚举长度
+			for (int j = 1; j <= nums.length; j++) {
+				List<Integer> path = new ArrayList<>();
+				path.add(nums[i]);
+				dfs1(nums, path, result, j, i + 1);
+			}
+		}
+		return result;
+	}
+
+	private void dfs1(int[] nums, List<Integer> path, List<List<Integer>> result, int k, int start) {
+		if (path.size() == k) {
+			String key = "";
+			List<Integer> keyList = new ArrayList<>(path).stream().sorted().collect(Collectors.toList());
+			for (Integer i1 : keyList) {
+				key = key + "," + i1;
+			}
+			if (existMap.get(key) != null){
+				return;
+			}
+			result.add(new ArrayList<>(path));
+			existMap.put(key, key);
+			return;
+		}
+		if (start >= nums.length) {
+			return;
+		}
+		for (int i = start; i <= nums.length - 1 ; i++) {
+			path.add(nums[i]);
+			dfs1(nums, path, result, k, i + 1);
+			path.remove(path.size() - 1);
+		}
+
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/search-in-rotated-sorted-array-ii/
+	 * @param nums
+	 * @param target
+	 * @return
+	 */
+	public boolean search(int[] nums, int target) {
+		for (int num : nums) {
+			if (num == target) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/
+	 * @param nums
+	 * @return
+	 */
+	public int removeDuplicates(int[] nums) {
+		// 用作哨兵，也就是最终的结果。
+		int index = -1;
+		// 当前跟哨兵相同的数量是多少。
+		int ans = 0;
+		for (int i = 0; i < nums.length; i++) {
+			if (index == -1) {
+				nums[++index] = nums[i];
+				ans = 1;
+				continue;
+			}
+			if (nums[index] == nums[i]) {
+				// 分成两种情况。
+				if (ans != 2) {
+					nums[++index] = nums[i];
+					ans++;
+				}
+			} else if(nums[index] != nums[i]) {
+				nums[++index] = nums[i];
+				ans = 1;
+			}
+		}
+		return index + 1;
+	}
+
+	/**
+	 * https://leetcode.cn/problems/word-search/
+	 * @param board
+	 * @param word
+	 * @return
+	 */
+	boolean existFlag = false;
+	public boolean exist(char[][] board, String word) {
+		existFlag = false;
+		char[] charArray = word.toCharArray();
+		if (word == null || word.length() == 0) {
+			return true;
+		}
+		int m = board.length;
+		int n = board[0].length;
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				if (board[i][j] == charArray[0]) {
+					boolean[][] isVisited = new boolean[m][n];
+					isVisited[i][j] = true;
+					dfs(isVisited, i, j, m, n, charArray, 1, board);
+				}
+			}
+		}
+		return existFlag;
+	}
+
+	private void dfs(boolean[][] isVisited, int x, int y, int m, int n, char[] charArray, int index, char[][] board) {
+		if (existFlag) {
+			return;
+		}
+		if (index == charArray.length) {
+			existFlag = true;
+			return;
+		}
+		if (x <0 || y < 0 || x >= m || y>=n) {
+			return ;
+		}
+		//  上面
+		if (x - 1>= 0 && !isVisited[x -1][y] && charArray[index] == board[x-1][y]) {
+			isVisited[x -1][y] = true;
+			dfs(isVisited, x -1, y, m, n, charArray, index + 1, board);
+			isVisited[x -1][y] = false;
+		}
+		// 下面
+		if (x + 1< m && !isVisited[x +1][y] && charArray[index] == board[x+1][y]) {
+			isVisited[x + 1][y] = true;
+			dfs(isVisited, x + 1, y, m, n, charArray, index + 1, board);
+			isVisited[x + 1][y] = false;
+		}
+		// 左边
+
+		if (y - 1 >=0 && !isVisited[x][y - 1] && charArray[index] == board[x][y-1]) {
+			isVisited[x][y - 1] = true;
+			dfs(isVisited, x, y -1 , m, n, charArray, index + 1, board);
+			isVisited[x ][y - 1] = false;
+		}
+		//右边
+		if (y + 1 < n && !isVisited[x][y + 1] && charArray[index] == board[x][y+1]) {
+			isVisited[x][y + 1] = true;
+			dfs(isVisited, x, y + 1 , m, n, charArray, index + 1, board);
+			isVisited[x ][y + 1] = false;
+		}
+	}
+
+	/**
+	 * https://leetcode.cn/problems/subsets/
+	 * @param nums
+	 * @return
+	 */
+	public List<List<Integer>> subsets(int[] nums) {
+		List<List<Integer>> result = new ArrayList<>();
+		result.add(new ArrayList<>());
+		Arrays.sort(nums);
+		// 枚举数字的长度。
+
+		for (int i = 0; i < nums.length; i++) {
+			for (int j = 1; j <= nums.length; j++) {
+				List<Integer> path = new ArrayList<>();
+				path.add(nums[i]);
+				dfs(nums, path, result, j, i + 1);
+			}
+		}
+		return result;
+	}
+
+
+	private void dfs(int[] nums, List<Integer> path, List<List<Integer>> result, int k, int start) {
+		if (path.size() == k) {
+			result.add(new ArrayList<>(path));
+			return;
+		}
+		if (start >= nums.length) {
+			return;
+		}
+		for (int i = start; i <= nums.length - 1 ; i++) {
+			path.add(nums[i]);
+			dfs(nums, path, result, k, i + 1);
+			path.remove(path.size() - 1);
+		}
+
+	}
+
+	/**
+	 * https://leetcode.cn/problems/combinations/
+	 * @param n
+	 * @param k
+	 * @return
+	 */
+	public List<List<Integer>> combine(int n, int k) {
+		List<List<Integer>> result = new ArrayList<>();
+		for (int i = 1; i <= n; i++) {
+			List<Integer> path = new ArrayList<>();
+			path.add(i);
+			dfs(n, path, result, k, i);
+		}
+		return result;
+	}
+
+	private void dfs(int n, List<Integer> path, List<List<Integer>> result, int k, int start) {
+		if (path.size() == k) {
+			result.add(new ArrayList<>(path));
+			return;
+		}
+		for (int i = start + 1; i <= n ; i++) {
+
+			path.add(i);
+			dfs(n, path, result, k, i);
+			path.remove(path.size() - 1);
+
+		}
+
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/sort-colors/
+	 * 我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色
+	 * @param nums: 颜色分类排序，不能使用内置函数。可以利用三个指针来进行排序。
+	 */
+	public void sortColors(int[] nums) {
+		int n = nums.length;
+		//Arrays.sort(nums);
+		int endRed = -1;
+		int endWhite = -1;
+		for (int i = 0; i < nums.length; i++) {
+			// 如果当前是红色的话。
+			if (nums[i] == 0) {
+				int tmp = nums[endRed+1];
+				nums[endRed+1] = nums[i];
+				nums[i] = tmp;
+				endRed++;
+			}
+			if (nums[i] == 1) {
+				if (endWhite == -1) {
+					endWhite = endRed + 1;
+				}
+				int tmp = nums[endWhite];
+				nums[endWhite] = nums[i];
+				nums[i] = tmp;
+				endWhite++;
+			}
+		}
+
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/spiral-matrix-ii/
+	 * @param n
+	 * @return
+	 */
+	public int[][] generateMatrix(int n) {
+		int[][] ans = new int[n][n];
+		int startCol = 0;
+		int startRow = 0;
+		int endCol = n - 1;
+		int endRow = n - 1;
+		int num = 1;
+		while (startCol <= endCol && startRow <= endRow) {
+			// 先处理横向的。
+			for (int i = startCol; i <= endCol ; i++) {
+				ans[startRow][i] = num++;
+			}
+			startRow++;
+
+			// 后处理尾部纵向的。
+			for (int i = startRow; i <= endRow; i++) {
+				ans[i][endCol] = num++;
+			}
+			endCol--;
+
+			// 处理底部横向。
+			if (startCol <= endCol) {
+				for (int i = endCol; i >= startCol; i--) {
+					ans[endRow][i] = num++;
+				}
+				endRow--;
+			}
+
+			// 处理左边的纵向。
+			if (startRow <= endRow) {
+				for (int i = endRow; i >= startRow; i--) {
+					ans[i][startCol] = num++;
+				}
+				startCol++;
+			}
+		}
+		return ans;
+	}
+
+	/**
+	 * https://leetcode.cn/problems/spiral-matrix/
+	 * @param matrix
+	 * @return
+	 */
+	public List<Integer> spiralOrder(int[][] matrix) {
+		List<Integer> ans = new ArrayList<>();
+		int m = matrix.length - 1;
+		int n = matrix[0].length - 1;
+		int startCol = 0;
+		int startRow = 0;
+		while (startCol <= n && startRow <= m) {
+			// 先处理横向的。
+			for (int i = startCol; i <= n; i++) {
+				ans.add(matrix[startRow][i]);
+			}
+			startRow++;
+			// 处理右边的纵向节点。
+			for (int i = startCol + 1; i <= m ; i++) {
+				ans.add(matrix[i][n]);
+			}
+			n--;
+			// 处理底下的横向节点。
+			if (startRow <= m) {
+				for (int i = n; i >= startCol; i--) {
+					ans.add(matrix[m][i]);
+				}
+				m--;
+			}
+			// 处理左边的纵向节点。
+			if (startCol <= n) {
+				for (int i = m; i >= startRow; i--) {
+					ans.add(matrix[i][startCol]);
+				}
+				startCol++;
+			}
+
+		}
+		return ans;
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/permutation-sequence/
+	 * @param n
+	 * @param k
+	 * @return
+	 */
+	List<Integer> ansResult;
+	int count = 0;
+	public String getPermutation(int n, int k) {
+		ansResult = new ArrayList<>();
+		count = 0;
+		dfs(n, new boolean[n + 1], new ArrayList<>(), k);
+		return ansResult.stream().map(String::valueOf).collect(Collectors.joining());
+	}
+
+	/**
+	 * 这个方式会出现超时。
+	 * @param n
+	 * @param isUsed
+	 * @param path
+	 */
+	private void dfs(int n, boolean[] isUsed, List<Integer> path, int k) {
+		if (path.size() == n) {
+			count++;
+			if (count == k) {
+				ansResult = new ArrayList<>(path);
+			}
+			return ;
+		}
+		for (int i = 1; i <= n; i++) {
+			if (isUsed[i]) {
+				continue;
+			}
+			if (count == k) {
+				return;
+			}
+			path.add(i);
+			isUsed[i] = true;
+			dfs(n, isUsed, path, k);
+			path.remove(path.size() - 1);
+			isUsed[i] = false;
+		}
 	}
 
 
