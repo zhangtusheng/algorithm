@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.alibaba.fastjson.JSON;
 import com.zts.model.ListNode;
 
 /**
@@ -132,22 +131,61 @@ public class Main202405 {
 //		main202405.nextPermutation(nums);
 //		System.out.println(JSON.toJSONString(nums));
 
-		nums = new int[]{1, 2, 3,4,5};
-		main202405.nextPermutation(nums);
-		System.out.println(JSON.toJSONString(nums));
+//		nums = new int[]{1, 2, 3,4,5};
+//		main202405.nextPermutation(nums);
+//		System.out.println(JSON.toJSONString(nums));
+//
+//		nums = new int[]{1, 3, 2};
+//		main202405.nextPermutation(nums);
+//		System.out.println(JSON.toJSONString(nums));
+//
+//		nums = new int[]{1, 2, 3};
+//		main202405.nextPermutation(nums);
+//		System.out.println(JSON.toJSONString(nums));
+//
+//		nums = new int[]{3, 2, 1};
+//		main202405.nextPermutation(nums);
+//		System.out.println(JSON.toJSONString(nums));
 
-		nums = new int[]{1, 3, 2};
-		main202405.nextPermutation(nums);
-		System.out.println(JSON.toJSONString(nums));
 
-		nums = new int[]{1, 2, 3};
-		main202405.nextPermutation(nums);
-		System.out.println(JSON.toJSONString(nums));
 
-		nums = new int[]{3, 2, 1};
-		main202405.nextPermutation(nums);
-		System.out.println(JSON.toJSONString(nums));
+	}
 
+
+
+
+
+
+
+
+	/**
+	 *
+	 * @param head
+	 * @return
+	 */
+	public ListNode detectCycle(ListNode head) {
+		ListNode slow = head;
+		ListNode fast = head;
+		while (slow != fast) {
+			if (fast == null || fast.next == null) {
+				return null;
+			}
+			slow = slow.next;
+			fast = fast.next.next;
+		}
+		if (slow == null) {
+			return null;
+		}
+		// 经过两轮的slow的话，这个就一定是答案。
+		ListNode ptr = head;
+		int i = 0;
+		while ((ptr.next == slow && i == 1)) {
+			if (ptr == slow) {
+				i = 1;
+			}
+			ptr = ptr.next;
+		}
+		return ptr;
 	}
 
 	boolean isEnd = false;
