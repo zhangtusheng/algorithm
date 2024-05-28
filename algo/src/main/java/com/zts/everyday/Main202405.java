@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSON;
 import com.zts.model.ListNode;
 
 /**
@@ -148,7 +149,49 @@ public class Main202405 {
 //		System.out.println(JSON.toJSONString(nums));
 
 
+		System.out.println(JSON.toJSONString(main202405.findPeaks(new int[] {1, 4, 3, 8, 7, 8})));
 
+	}
+
+	/**
+	 * https://leetcode.cn/problems/day-of-the-year/?envType=daily-question&envId=2024-05-28
+	 * @param date
+	 * @return
+	 */
+	public int dayOfYear(String date) {
+		int[] days = {31,28,31,30,31,30,31,31,30,31,30,31};
+		String[] split = date.split("-");
+		int year = Integer.parseInt(split[0]);
+		int month = Integer.parseInt(split[1]);
+		int day = Integer.parseInt(split[2]);
+		int result = 0;
+		for (int i = 0; i < month - 1; i++) {
+			result += days[i];
+		}
+		result += day;
+		if (month > 2 && year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
+			result++;
+		}
+		return result;
+	}
+
+
+
+	/**
+	 * https://leetcode.cn/problems/find-the-peaks/?envType=daily-question&envId=2024-05-28
+	 * @param mountain
+	 * @return
+	 */
+	public List<Integer> findPeaks(int[] mountain) {
+		List<Integer> result = new ArrayList<>();
+		int index = 1;
+		while (index < mountain.length - 1) {
+			if (mountain[index] > mountain[index - 1] && mountain[index] > mountain[index + 1]) {
+				result.add(index);
+			}
+			index++;
+		}
+		return result;
 	}
 
 
