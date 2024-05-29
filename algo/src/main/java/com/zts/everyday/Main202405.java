@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.alibaba.fastjson.JSON;
 import com.zts.model.ListNode;
 
 /**
@@ -149,8 +148,50 @@ public class Main202405 {
 //		System.out.println(JSON.toJSONString(nums));
 
 
-		System.out.println(JSON.toJSONString(main202405.findPeaks(new int[] {1, 4, 3, 8, 7, 8})));
+//		System.out.println(JSON.toJSONString(main202405.findPeaks(new int[] {1, 4, 3, 8, 7, 8})));
 
+		System.out.println(main202405.maximumLength("aabbb"));
+		System.out.println(main202405.maximumLength("aaaa"));
+
+	}
+
+	/**
+	 * https://leetcode.cn/problems/find-longest-special-substring-that-occurs-thrice-i/?envType=daily-question&envId=2024-05-29
+	 * @param s
+	 * @return
+	 */
+	public int maximumLength(String s) {
+		int result = -1;
+		int n = s.length();
+		// 枚举长度
+		for (int i = 1; i < n; i++) {
+			// 枚举开始节点。
+			Map<String, Integer> map = new HashMap<>();
+			for (int j = 0; j < n - i + 1; j++) {
+				// 并且这段是合法的，才能进行计算。
+				String substring = s.substring(j, j + i);
+				if (!checkSpecial(substring)) {
+					continue;
+				}
+				map.put(substring, map.getOrDefault(substring, 0) + 1);
+			}
+			for (Map.Entry<String, Integer> entry : map.entrySet()) {
+				if (entry.getValue() >= 3) {
+					result = Math.max(result, entry.getKey().length());
+				}
+			}
+		}
+		return result;
+	}
+
+	private boolean checkSpecial(String s) {
+		char[] charArray = s.toCharArray();
+		for (int i = 1; i < charArray.length; i++) {
+			if (charArray[i] != charArray[i-1]) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
