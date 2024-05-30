@@ -150,9 +150,93 @@ public class Main202405 {
 
 //		System.out.println(JSON.toJSONString(main202405.findPeaks(new int[] {1, 4, 3, 8, 7, 8})));
 
-		System.out.println(main202405.maximumLength("aabbb"));
-		System.out.println(main202405.maximumLength("aaaa"));
+//		System.out.println(main202405.maximumLength1("aabbb"));
+//		System.out.println(main202405.maximumLength1("aaaa"));
+//		System.out.println(main202405.maximumLength1("abcaba"));
+//		System.out.println(main202405.maximumLength1("aada"));
+		//System.out.println(main202405.maximumLength1("accccerrrc"));
+		//System.out.println(main202405.maximumLength1("jinhhhtttttttefffffjjjjjjjjjfffffjjjjjjjjjqvvvvvvg"));
+		System.out.println(main202405.maximumLength1("alappaaaaapttgvvvmmc"));
 
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/find-longest-special-substring-that-occurs-thrice-ii/submissions/536040107/?envType=daily-question&envId=2024-05-30
+	 * @param s
+	 * @return
+	 */
+	public int maximumLength1(String s) {
+		int result = -1;
+		int n = s.length();
+		Map<Character, List<NodeT>> map = new HashMap<>();
+		char start = s.charAt(0);
+		NodeT nodeT = new NodeT();
+		nodeT.index = 0;
+		nodeT.count = 1;
+		List<NodeT> list = new ArrayList<>();
+		list.add(nodeT);
+		map.put(start, list);
+		for (int i = 1; i < n ; i++) {
+			if (s.charAt(i) == start) {
+				nodeT.count++;
+			} else {
+				start = s.charAt(i);
+				nodeT = new NodeT();
+				nodeT.index = i;
+				nodeT.count = 1;
+				list = map.getOrDefault(start, new ArrayList<>());
+				if (list.size() == 0) {
+					map.put(start, list);
+				}
+				list.add(nodeT);
+			}
+		}
+		for (Map.Entry<Character, List<NodeT>> entry : map.entrySet()) {
+			// 最大的只会在倒数第三个。
+			List<NodeT> collect = entry.getValue().stream().sorted((o1, o2) -> o2.count - o1.count).limit(3)
+				.collect(Collectors.toList());
+			// 第一个是最大的，第二个是第二大的，第三个是第三大的。
+			if (collect.size() == 3) {
+				int b = collect.get(0).count - 2;
+				// 如果是991的话，那最大值可能是，collect.get(1).count + 1
+				if (collect.get(1).count == collect.get(0).count) {
+					if (collect.get(2).count == collect.get(1).count) {
+						result = Math.max(result, collect.get(0).count);
+					} else {
+						int b1 = collect.get(1).count - 1;
+						result = Math.max(result, b1 <= 0 ? -1 : b1);
+					}
+				} else {
+					// 如果是999的话，那最大值可能是，collect.get(1).count 5,1,1
+					int b1 = collect.get(0).count - 2;
+					if (b1 < collect.get(1).count) {
+						result = Math.max(result, collect.get(1).count);
+					} else {
+						result = Math.max(result, b1);
+					}
+				}
+			} else if (collect.size() == 2) {
+				// 特殊判断，如果是两个相等的话，那么就是当前值-1
+				if (collect.get(0).count == collect.get(1).count) {
+					int b = collect.get(0).count - 1;
+					result = Math.max(result, b <= 0 ? -1: b);
+				} else {
+					int b = collect.get(0).count - 2;
+					result = Math.max(result, Math.max(b, collect.get(1).count));
+				}
+			} else {
+				int b = collect.get(0).count - 2;
+				result = Math.max(result, b <= 0 ? -1: b);
+			}
+		}
+
+		return result;
+	}
+
+	private class NodeT {
+		public int index;
+		public int count;
 	}
 
 	/**
