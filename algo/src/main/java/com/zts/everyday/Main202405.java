@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSON;
 import com.zts.model.ListNode;
 
 /**
@@ -156,8 +157,37 @@ public class Main202405 {
 //		System.out.println(main202405.maximumLength1("aada"));
 		//System.out.println(main202405.maximumLength1("accccerrrc"));
 		//System.out.println(main202405.maximumLength1("jinhhhtttttttefffffjjjjjjjjjfffffjjjjjjjjjqvvvvvvg"));
-		System.out.println(main202405.maximumLength1("alappaaaaapttgvvvmmc"));
+//		System.out.println(main202405.maximumLength1("alappaaaaapttgvvvmmc"));
+		System.out.println(JSON.toJSONString(main202405.findMissingAndRepeatedValues(new int[][]{{1, 3}, {2, 2}})));
 
+	}
+
+
+	/**
+	 *https://leetcode.cn/problems/find-missing-and-repeated-values/?envType=daily-question&envId=2024-05-31
+	 * @param grid
+	 * @return
+	 */
+	public int[] findMissingAndRepeatedValues(int[][] grid) {
+		Map<Integer, Integer> map = new HashMap<>();
+		int n = grid.length;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < grid[0].length; j++) {
+				map.put(grid[i][j], map.getOrDefault(grid[i][j], 0) + 1);
+			}
+		}
+		int[] result = new int[2];
+		int i = 1;
+		int length = n * n;
+		while (i <= length) {
+			if (map.getOrDefault(i, 0) == 0) {
+				result[1] = i;
+			} else if (map.getOrDefault(i, 0) == 2) {
+				result[0] = i;
+			}
+			i++;
+		}
+		return result;
 	}
 
 
