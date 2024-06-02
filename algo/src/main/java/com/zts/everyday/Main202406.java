@@ -14,8 +14,40 @@ public class Main202406 {
 
     public static void main(String[] args) {
         Main202406 main202406 = new Main202406();
-        System.out.println(main202406.distributeCandies(5, 3));
-        System.out.println(main202406.distributeCandies(3, 3));
+//        System.out.println(main202406.distributeCandies(5, 3));
+//        System.out.println(main202406.distributeCandies(3, 3));
+//        main202406.test();
+
+        System.out.println(main202406.distributeCandies(new int[]{1, 1, 2, 2, 3, 3}));
+        System.out.println(main202406.distributeCandies(new int[]{6, 6, 6, 6}));
+    }
+
+
+    /**
+     * https://leetcode.cn/problems/distribute-candies/?envType=daily-question&envId=2024-06-02
+     * @param candyType
+     * @return
+     */
+    public int distributeCandies(int[] candyType) {
+        int n = candyType.length;
+        int m = n / 2;
+        int[] count = new int[200001];
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            if (count[candyType[i] + 100000] == 0) {
+                ans++;
+            }
+            count[candyType[i] + 100000]++;
+        }
+        return Math.min(ans, m);
+    }
+
+    private void test() {
+        // 计算1的个数。
+        System.out.println(Integer.bitCount(7));
+        System.out.println(32 - Integer.numberOfLeadingZeros(3));
+        System.out.println(Integer.numberOfLeadingZeros(3));
+        System.out.println(Integer.numberOfTrailingZeros(3));
     }
 
     /**
