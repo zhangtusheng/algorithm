@@ -1,9 +1,9 @@
 package com.zts.everyday;
 
-import com.zts.model.TreeNode;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.zts.model.TreeNode;
 
 /**
  * @Author zhangtusheng
@@ -20,6 +20,23 @@ public class Main202406 {
 
         System.out.println(main202406.distributeCandies(new int[]{1, 1, 2, 2, 3, 3}));
         System.out.println(main202406.distributeCandies(new int[]{6, 6, 6, 6}));
+    }
+
+    /**
+     * https://leetcode.cn/problems/distribute-candies-to-people/?envType=daily-question&envId=2024-06-03
+     * @param candies
+     * @param num_people
+     * @return
+     */
+    public int[] distributeCandies1(int candies, int num_people) {
+        int[] ans = new int[num_people];
+        int i = 0;
+        while (candies > 0) {
+            ans[i % num_people] += Math.min(candies, i + 1);
+            candies -= i + 1;
+            i++;
+        }
+        return ans;
     }
 
 
