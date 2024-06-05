@@ -18,8 +18,40 @@ public class Main202406 {
 //        System.out.println(main202406.distributeCandies(3, 3));
 //        main202406.test();
 
-        System.out.println(main202406.distributeCandies(new int[]{1, 1, 2, 2, 3, 3}));
-        System.out.println(main202406.distributeCandies(new int[]{6, 6, 6, 6}));
+//        System.out.println(main202406.distributeCandies(new int[]{1, 1, 2, 2, 3, 3}));
+//        System.out.println(main202406.distributeCandies(new int[]{6, 6, 6, 6}));
+
+        System.out.println(main202406.longestCommonPrefix(new String[]{"flower", "flow", "flight"}));
+    }
+
+    /**
+     * https://leetcode.cn/problems/longest-common-prefix/
+     * @param strs
+     * @return
+     */
+    public String longestCommonPrefix(String[] strs) {
+        StringBuilder sb = new StringBuilder(strs[0]);
+        int n = strs.length;
+        int i = 1;
+        while (i < n) {
+            StringBuilder sb1 = new StringBuilder("");
+            char[] charArray = sb.toString().toCharArray();
+            char[] charArray1 = strs[i].toCharArray();
+            int minLength = Math.min(sb.length(), strs[i].length());
+            for (int j = 0; j < minLength; j++) {
+                if (charArray[j] == charArray1[j]) {
+                    sb1.append(charArray[j]);
+                } else {
+                    break;
+                }
+            }
+            sb = sb1;
+            if (sb.length() == 0) {
+                break;
+            }
+            i++;
+        }
+        return sb.toString();
     }
 
     /**
