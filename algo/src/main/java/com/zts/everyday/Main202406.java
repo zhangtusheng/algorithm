@@ -2,6 +2,8 @@ package com.zts.everyday;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import com.zts.model.TreeNode;
 
@@ -21,7 +23,39 @@ public class Main202406 {
 //        System.out.println(main202406.distributeCandies(new int[]{1, 1, 2, 2, 3, 3}));
 //        System.out.println(main202406.distributeCandies(new int[]{6, 6, 6, 6}));
 
-        System.out.println(main202406.longestCommonPrefix(new String[]{"flower", "flow", "flight"}));
+//        System.out.println(main202406.longestCommonPrefix(new String[]{"flower", "flow", "flight"}));
+        System.out.println(main202406.minimumSteps("110"));
+        System.out.println(main202406.minimumSteps("001"));
+        System.out.println(main202406.minimumSteps("101"));
+    }
+
+
+    /**
+     * https://leetcode.cn/problems/separate-black-and-white-balls/?envType=daily-question&envId=Invalid%20Date
+     * @param s
+     * @return
+     */
+    public long minimumSteps(String s) {
+        // 标记黑球的位置。
+        Queue<Integer> queue = new PriorityQueue<>((a, b) -> b - a);
+
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '0') {
+                queue.offer(i);
+            }
+        }
+
+        long ans = 0L;
+        //
+        for (int i = s.length() - 1; i >= 0 ; i--) {
+            if (s.charAt(i) == '1') {
+                if (!queue.isEmpty() && queue.peek() > i) {
+                    ans += Math.abs(i - queue.poll());
+                    queue.offer(i);
+                }
+            }
+        }
+        return ans;
     }
 
     /**
