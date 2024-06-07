@@ -31,6 +31,27 @@ public class Main202406 {
 
 
     /**
+     * https://leetcode.cn/problems/maximum-number-of-operations-with-the-same-score-i/?envType=daily-question&envId=2024-06-07
+     * @param nums
+     * @return
+     */
+    public int maxOperations(int[] nums) {
+        int start = 0;
+        int sum = nums[0] + nums[1];
+        int ans = 0;
+        while (start < nums.length && start + 1 < nums.length) {
+            if (nums[start] + nums[start + 1] == sum) {
+                start += 2;
+                ans++;
+            } else {
+                break;
+            }
+        }
+        return ans;
+    }
+
+
+    /**
      * https://leetcode.cn/problems/separate-black-and-white-balls/?envType=daily-question&envId=Invalid%20Date
      * @param s
      * @return
