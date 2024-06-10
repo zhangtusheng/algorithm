@@ -24,9 +24,46 @@ public class Main202406 {
 //        System.out.println(main202406.distributeCandies(new int[]{6, 6, 6, 6}));
 
 //        System.out.println(main202406.longestCommonPrefix(new String[]{"flower", "flow", "flight"}));
-        System.out.println(main202406.minimumSteps("110"));
-        System.out.println(main202406.minimumSteps("001"));
-        System.out.println(main202406.minimumSteps("101"));
+//        System.out.println(main202406.minimumSteps("110"));
+//        System.out.println(main202406.minimumSteps("001"));
+//        System.out.println(main202406.minimumSteps("101"));
+        System.out.println(main202406.maxOperations1(new int[]{3, 2, 1, 2, 3, 4}));
+    }
+
+    /**
+     * https://leetcode.cn/problems/maximum-number-of-operations-with-the-same-score-ii/?envType=daily-question&envId=2024-06-08
+     * @param nums
+     * @return
+     */
+    Integer maxOperationNums = 0;
+    public int maxOperations1(int[] nums) {
+        maxOperationNums = 0;
+        int length = nums.length;
+        dfs(nums, 0, 0, nums.length -1, nums[0] + nums[1]);
+        dfs(nums, 0, 0, nums.length - 1, nums[length -1] + nums[length - 2]);
+        dfs(nums, 0, 0, nums.length - 1, nums[length -1] + nums[0]);
+        return maxOperationNums;
+    }
+
+    private void dfs(int[] nums, int operationNums, int start, int end, int target) {
+        if (start >= end) {
+            maxOperationNums = Math.max(maxOperationNums, operationNums);
+            return;
+        }
+
+        // 前面两个
+        if (start + 1 <= end && nums[start] + nums[start + 1] == target) {
+            dfs(nums, operationNums + 1, start + 2, end, target);
+        }
+        // 后面两个
+        if (end - 1 >= start && nums[end- 1] + nums[end] == target) {
+            dfs(nums, operationNums + 1, start, end - 2, target);
+        }
+        // 一个前一个后
+        if (start != end && nums[start] + nums[end] == target) {
+            dfs(nums, operationNums + 1, start + 1, end - 1, target);
+        }
+        maxOperationNums = Math.max(maxOperationNums, operationNums);
     }
 
 
