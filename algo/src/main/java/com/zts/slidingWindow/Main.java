@@ -1,5 +1,8 @@
 package com.zts.slidingWindow;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author zts
  * @date 2024/6/12 19:45
@@ -12,8 +15,59 @@ public class Main {
 //		System.out.println(main.minSubArrayLen(7, new int[]{2, 3, 1, 2, 4, 3}));
 //		System.out.println(main.lengthOfLongestSubstringTwoDistinct("eceba"));
 //		System.out.println(main.minWindow("ADOBECODEBANC", "ABC"));
-		System.out.println(main.minWindow("a", "a"));
+//		System.out.println(main.minWindow("a", "a"));
+//		System.out.println(main.containsNearbyDuplicate(new int[]{1, 2, 3, 1}, 3));
+		System.out.println(main.containsNearbyAlmostDuplicate(new int[]{1, 2, 3, 1}, 3, 0));
 	}
+
+
+	/**
+	 * https://leetcode.cn/problems/contains-duplicate-iii/
+	 * @param nums
+	 * @param indexDiff
+	 * @param valueDiff
+	 * @return
+	 */
+	public boolean containsNearbyAlmostDuplicate(int[] nums, int indexDiff, int valueDiff) {
+		boolean result = false;
+		int left = 0, right = 1;
+		while (right < nums.length) {
+			left = right - 1;
+			while (left >= 0 && Math.abs(right - left) <= indexDiff) {
+				if (Math.abs(nums[left] - nums[right]) <= valueDiff) {
+					return true;
+				}
+				left--;
+			}
+			right++;
+		}
+		return result;
+	}
+
+	/**
+	 * https://leetcode.cn/problems/contains-duplicate-ii/
+	 * @param nums
+	 * @param k
+	 * @return
+	 */
+	public boolean containsNearbyDuplicate(int[] nums, int k) {
+		boolean result = false;
+		int right = 0;
+		Map<Integer, Integer> map = new HashMap<>();
+		while (right < nums.length) {
+			int num = nums[right];
+			if (map.containsKey(num)) {
+				if (right - map.get(num) <= k) {
+					result = true;
+					break;
+				}
+			}
+			map.put(num, right);
+			right++;
+		}
+		return result;
+	}
+
 
 
 	/**
