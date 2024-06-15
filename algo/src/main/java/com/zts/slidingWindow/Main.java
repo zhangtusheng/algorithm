@@ -24,25 +24,41 @@ public class Main {
 	/**
 	 * https://leetcode.cn/problems/contains-duplicate-iii/
 	 * @param nums
-	 * @param indexDiff
-	 * @param valueDiff
+	 * @param k
+	 * @param t: 思路是将元素划分成不同的捅。例如第一个捅是t+valueDiff，另一个是t-valueDiff。
 	 * @return
 	 */
-	public boolean containsNearbyAlmostDuplicate(int[] nums, int indexDiff, int valueDiff) {
-		boolean result = false;
-		int left = 0, right = 1;
-		while (right < nums.length) {
-			left = right - 1;
-			while (left >= 0 && Math.abs(right - left) <= indexDiff) {
-				if (Math.abs(nums[left] - nums[right]) <= valueDiff) {
-					return true;
-				}
-				left--;
+	public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+		int n = nums.length;
+		Map<Long, Long> map = new HashMap<>();
+		long w = (long) t + 1;
+		for (int i = 0; i < n; i++) {
+			long id = getId(nums[i], w);
+			if (map.containsKey(id)) {
+				return true;
 			}
-			right++;
+			if (map.containsKey(id - 1) && Math.abs(map.get(id - 1) - nums[i]) < w) {
+				return true;
+			}
+			if (map.containsKey(id + 1) && Math.abs(map.get(id + 1) - nums[i]) < w) {
+				return true;
+			}
+			map.put(id, (long) nums[i]);
+			if (i >= k) {
+				map.remove(getId(nums[i - k], w));
+			}
 		}
-		return result;
+		return false;
 	}
+
+	// 很多小伙伴对getID有点迷惑,就是为什么取负数,如w=10, 因为非负数是09，1019...
+	// 这种一组，而负数是-1~-10, 为什么要先加一，就是让-1~-10变成0~-9，这样就和非负数一样了
+	// -11~-20...这些是一组，如果-1~-10直接除以10，会被分到两组中，而不是-1这一组，
+	// 所以先+1变成-0--9,与正数一致，再除以10，最后减1，正好是-1这一组，其它组也是同理
+	private long getId(long x, long w) {
+		return x < 0 ? (x + 1) / w - 1 : x / w;
+	}
+
 
 	/**
 	 * https://leetcode.cn/problems/contains-duplicate-ii/
