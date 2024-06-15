@@ -1,5 +1,6 @@
 package com.zts.slidingWindow;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,88 @@ public class Main {
 //		System.out.println(main.minWindow("ADOBECODEBANC", "ABC"));
 //		System.out.println(main.minWindow("a", "a"));
 //		System.out.println(main.containsNearbyDuplicate(new int[]{1, 2, 3, 1}, 3));
-		System.out.println(main.containsNearbyAlmostDuplicate(new int[]{1, 2, 3, 1}, 3, 0));
+//		System.out.println(main.containsNearbyAlmostDuplicate(new int[]{1, 2, 3, 1}, 3, 0));
+		System.out.println(main.longestSubstring("bchhbbdefghiaaacb", 3));
+		System.out.println(main.longestSubstring("a", 1));
+	}
+
+
+
+
+	/**
+	 * https://leetcode.cn/problems/longest-substring-with-at-least-k-repeating-characters/
+	 * @param s
+	 * @param k
+	 * @return
+	 */
+	public int longestSubstring(String s, int k) {
+		int n = s.length();
+		char[] charArray = s.toCharArray();
+		int[] windows = new int[128];
+		int left = 0, right = 0;
+		int ans = 0;
+		Map<Character, Integer> map = new HashMap<>();
+		while (right < n) {
+			// 如果当前是合法的，那么往前能衍生多少的长度，或者说区间是多大。
+			windows[charArray[right]]++;
+			map.put(charArray[right], right);
+			if (windows[charArray[right]] >= k) {
+				int[] ints = Arrays.copyOfRange(windows, 0, 128);
+				// 从左边开始，当左边已经是符合要求了，这个时候是可以正常的进行处理的。
+				for (int i = 0; i <= right; i++) {
+					if (check(ints, k)) {
+						ans = Math.max(ans, right - i + 1);
+						break;
+					}
+					ints[charArray[i]] --;
+				}
+			}
+			right++;
+		}
+		return ans;
+	}
+
+	private boolean check(int[] windows, int k) {
+		for (int i = 0; i < 128; i++) {
+			if (windows[i] != 0 && windows[i] < k) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * https://leetcode.cn/problems/longest-substring-with-at-most-k-distinct-characters/
+	 * @param s
+	 * @param k
+	 * @return
+	 */
+	public int lengthOfLongestSubstringKDistinct(String s, int k) {
+		// 滑动窗口统计出现的数量。
+		int[] window = new int[128];
+		int ans = 0;
+		int left = 0, right = 0;
+		int length = 0;
+		while (right < s.length()) {
+			char c = s.charAt(right);
+			window[c]++;
+			if (window[c] == 1) {
+				ans++;
+			}
+			while (ans > k) {
+				// 窗口左边的字母，进行减法。
+				char d = s.charAt(left);
+				window[d]--;
+				if (window[d] == 0) {
+					ans--;
+				}
+				left++;
+			}
+			length = Math.max(length, right - left + 1);
+			right++;
+		}
+		return length;
+
 	}
 
 
