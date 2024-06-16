@@ -25,11 +25,72 @@ public class Week402 {
 
     /**
      * https://leetcode.cn/contest/weekly-contest-402/problems/peaks-in-array/
-     * @param nums
+     * @param nums: 感觉是树状数组。
      * @param queries
      * @return
      */
     public List<Integer> countOfPeaks(int[] nums, int[][] queries) {
+        int n = nums.length;
+        ArrayTree f = new ArrayTree(n - 1);
+        for (int i = 1; i < n - 1; i++) {
+            update(f, nums, i, 1);
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        for (int[] q : queries) {
+            if (q[0] == 1) {
+                ans.add(f.query(q[1] + 1, q[2] - 1));
+                continue;
+            }
+            int i = q[1];
+            for (int j = Math.max(i - 1, 1); j <= Math.min(i+1, n - 2); j++) {
+                update(f, nums, j, -1);
+            }
+            nums[i] = q[2];
+            for (int j = Math.max( i - 1, 1); j <= Math.min(i+1, n -2) ; j++) {
+                update(f, nums, j, 1);
+            }
+        }
+        return ans;
+    }
+
+    private void update(ArrayTree f, int[] nums, int i, int val) {
+        if (nums[i - 1] < nums[i] && nums[i] > nums[i+1]) {
+            f.update(i, val);
+        }
+    }
+
+
+    public static class ArrayTree{
+        private final int[] f;
+
+        public ArrayTree(int n) {
+            f = new int[n];
+        }
+
+        void update(int i, int value) {
+            for (; i< f.length; i+= i & -i) {
+                f[i] += value;
+            }
+        }
+
+        private int pre(int i) {
+            int res = 0;
+            for (; i> 0; i &=i-1) {
+                res += f[i];
+            }
+            return res;
+        }
+
+        int query(int l, int r) {
+            if (r < l) {
+                return 0;
+            }
+            return pre(r) - pre(l - 1);
+        }
+    }
+
+    private List<Integer> getIntegers(int[] nums, int[][] queries) {
         int n = nums.length;
         boolean[] isTop = new boolean[n];
         for (int i = 1; i < n - 1; i++) {
