@@ -1,8 +1,13 @@
 package com.zts.slidingWindow;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+
+import com.alibaba.fastjson.JSON;
 
 /**
  * @author zts
@@ -19,10 +24,126 @@ public class Main {
 //		System.out.println(main.minWindow("a", "a"));
 //		System.out.println(main.containsNearbyDuplicate(new int[]{1, 2, 3, 1}, 3));
 //		System.out.println(main.containsNearbyAlmostDuplicate(new int[]{1, 2, 3, 1}, 3, 0));
-		System.out.println(main.longestSubstring("bchhbbdefghiaaacb", 3));
-		System.out.println(main.longestSubstring("a", 1));
+//		System.out.println(main.longestSubstring("bchhbbdefghiaaacb", 3));
+//		System.out.println(main.longestSubstring("a", 1));
+//		System.out.println(main.characterReplacement("ABAB", 2));
+//		System.out.println(main.findMaxConsecutiveOnes(new int[]{1, 0, 1, 1, 0}));
+		System.out.println(JSON.toJSONString(main.medianSlidingWindow(new int[]{1, 3, -1, -3, 5, 3, 6, 7}, 3)));
 	}
 
+	/**
+	 * https://leetcode.cn/problems/sliding-window-median/
+	 *
+	 * @param nums
+	 * @param k
+	 * @return
+	 */
+	public double[] medianSlidingWindow(int[] nums, int k) {
+		List<Double> result = new ArrayList<>();
+		int left = 0, right = 0;
+		PriorityQueue<Integer> priorityQueue =  new PriorityQueue<>();
+		PriorityQueue<Integer> maxPriorityQueue = new PriorityQueue<>(((o1, o2) -> o2-o1));
+		for(; right < nums.length ; right++) {
+			maxPriorityQueue.offer(nums[right]);
+			while (priorityQueue.size() + maxPriorityQueue.size() > k) {
+				if (!priorityQueue.remove(nums[left])) {
+					maxPriorityQueue.remove(nums[left]);
+				}
+				if (priorityQueue.size() > maxPriorityQueue.size()) {
+					maxPriorityQueue.offer(priorityQueue.poll());
+				} else {
+					priorityQueue.offer(maxPriorityQueue.poll());
+				}
+				left++;
+			}
+			if (priorityQueue.size() + maxPriorityQueue.size() == k) {
+				// 偶数
+				if (k % 2 == 0){
+					int length = k;
+					if (maxPriorityQueue.peek() == priorityQueue.peek()) {
+						result.add(Double.valueOf(priorityQueue.peek()));
+					} else {
+						int i = maxPriorityQueue.peek() + priorityQueue.peek();
+						result.add(i * 1.0 / 2);
+					}
+				} else {
+					if (maxPriorityQueue.size() > priorityQueue.size()) {
+						result.add(Double.valueOf(maxPriorityQueue.peek()));
+					}else {
+						result.add(Double.valueOf(priorityQueue.peek()));
+					}
+				}
+			}
+		}
+		return result.stream().mapToDouble(Double::doubleValue).toArray();
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/max-consecutive-ones-ii/
+	 * @param nums
+	 * @return
+	 */
+	public int findMaxConsecutiveOnes(int[] nums) {
+		// 提前处理一下，当前的1的连续的的最长是多少。如果是符合要求的话，就进行处理。
+		int ans = 0;
+		int[] windows = new int[2];
+		int left = 0, right = 0;
+		int n = nums.length;
+		for(; right < n; right++) {
+			windows[nums[right]]++;
+			// 计算区间是否合理。left - right区间。
+			while (windows[0] > 1) {
+				windows[nums[left]]--;
+				left++;
+			}
+			ans = Math.max(ans, right - left + 1);
+		}
+		return ans;
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/longest-repeating-character-replacement/
+	 * @param s
+	 * @param k
+	 * @return
+	 */
+	public int characterReplacement(String s, int k) {
+		int[] windows = new int[128];
+		int ans = 0;
+		int left = 0, right = 0;
+		int n = s.length();
+		char[] charArray = s.toCharArray();
+		while (right < n) {
+			windows[charArray[right]]++;
+			boolean checkCorrect = false;
+			if (left < n) {
+				// 检查是否符合要求
+				while (!checkCorrect) {
+					// 不同的个数，取最大值。然后进行计算。
+					int maxChar = 0;
+					int diff = 0;
+					for (int i = 0; i < 128; i++) {
+						maxChar = Math.max(maxChar, windows[i]);
+						if (windows[i] > 0) {
+							diff++;
+						}
+					}
+					// 两种情况，一种是diff==1，另外一种是maxChar在当前操作范围内的。(right - left + 1 ) - maxChar
+					if (diff == 1 || (diff > 1 && (right - left + 1) - maxChar <= k)) {
+						checkCorrect = true;
+						ans = Math.max(ans, right - left + 1);
+					} else {
+						windows[charArray[left]] --;
+						left++;
+					}
+				}
+			}
+			right++;
+		}
+		return ans;
+	}
 
 
 
