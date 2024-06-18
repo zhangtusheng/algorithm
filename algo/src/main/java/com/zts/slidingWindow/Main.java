@@ -29,6 +29,19 @@ public class Main {
 //		System.out.println(main.characterReplacement("ABAB", 2));
 //		System.out.println(main.findMaxConsecutiveOnes(new int[]{1, 0, 1, 1, 0}));
 		System.out.println(JSON.toJSONString(main.medianSlidingWindow(new int[]{1, 3, -1, -3, 5, 3, 6, 7}, 3)));
+//		System.out.println(JSON.toJSONString(main.medianSlidingWindow(new int[]{
+//				-2147483648,-2147483648,
+//				2147483647,
+//				-2147483648,
+//				-2147483648,
+//				-2147483648,
+//				2147483647,
+//				2147483647,
+//				2147483647,
+//				2147483647,
+//				-2147483648,
+//				2147483647,
+//				-2147483648}, 3)));
 	}
 
 	/**
@@ -41,41 +54,79 @@ public class Main {
 	public double[] medianSlidingWindow(int[] nums, int k) {
 		List<Double> result = new ArrayList<>();
 		int left = 0, right = 0;
-		PriorityQueue<Integer> priorityQueue =  new PriorityQueue<>();
-		PriorityQueue<Integer> maxPriorityQueue = new PriorityQueue<>(((o1, o2) -> o2-o1));
-		for(; right < nums.length ; right++) {
+		PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
+		PriorityQueue<Integer> maxPriorityQueue = new PriorityQueue<>(((o1, o2) -> o2 - o1));
+		if (k == 1) {
+			return Arrays.stream(nums).mapToDouble(Double::valueOf).toArray();
+		}
+		for (; right < nums.length; right++) {
 			maxPriorityQueue.offer(nums[right]);
+			swap(maxPriorityQueue, priorityQueue);
 			while (priorityQueue.size() + maxPriorityQueue.size() > k) {
-				if (!priorityQueue.remove(nums[left])) {
-					maxPriorityQueue.remove(nums[left]);
-				}
-				if (priorityQueue.size() > maxPriorityQueue.size()) {
-					maxPriorityQueue.offer(priorityQueue.poll());
+				if (priorityQueue.size() < maxPriorityQueue.size()) {
+					if (priorityQueue.contains(nums[left])) {
+						priorityQueue.remove(nums[left]);
+					} else {
+						if (maxPriorityQueue.contains(nums[left])) {
+							maxPriorityQueue.remove(nums[left]);
+						}
+					}
 				} else {
-					priorityQueue.offer(maxPriorityQueue.poll());
+					if (priorityQueue.contains(nums[left])) {
+						priorityQueue.remove(nums[left]);
+					} else {
+						if (!maxPriorityQueue.contains(nums[left])) {
+							maxPriorityQueue.remove(nums[left]);
+						}
+					}
 				}
+				swap(maxPriorityQueue, priorityQueue);
 				left++;
 			}
+			//-2147483648.0,-2147483648.0,-2147483648.0,-2147483648.0,-2147483648.0,2147483647.0,2147483647.0,2147483647.0,2147483647.0,2147483647.0,-2147483648.0
 			if (priorityQueue.size() + maxPriorityQueue.size() == k) {
 				// 偶数
-				if (k % 2 == 0){
-					int length = k;
-					if (maxPriorityQueue.peek() == priorityQueue.peek()) {
+				if (k % 2 == 0) {
+					if ((int)maxPriorityQueue.peek() == (int)priorityQueue.peek()) {
 						result.add(Double.valueOf(priorityQueue.peek()));
 					} else {
-						int i = maxPriorityQueue.peek() + priorityQueue.peek();
+						long i = (long) maxPriorityQueue.peek() + priorityQueue.peek();
 						result.add(i * 1.0 / 2);
 					}
 				} else {
 					if (maxPriorityQueue.size() > priorityQueue.size()) {
 						result.add(Double.valueOf(maxPriorityQueue.peek()));
-					}else {
+					} else {
 						result.add(Double.valueOf(priorityQueue.peek()));
 					}
 				}
 			}
 		}
 		return result.stream().mapToDouble(Double::doubleValue).toArray();
+	}
+
+
+	private void swap(PriorityQueue<Integer> maxPriority, PriorityQueue<Integer> minPriority) {
+		// 保证元素minPriority.size < maxPriority;
+		if (maxPriority.size() == minPriority.size()) return;
+		// 如果是那个大的，就进行对应的处理。
+		else if (maxPriority.size() < minPriority.size()) {
+			if (minPriority.size() - maxPriority.size() > 0) {
+				maxPriority.offer(minPriority.poll());
+				if (minPriority.size() >= 1) {
+					maxPriority.offer(minPriority.poll());
+					minPriority.offer(maxPriority.poll());
+				}
+			}
+		} else {
+			if (maxPriority.size() - minPriority.size() > 0) {
+				minPriority.offer(maxPriority.poll());
+				if (maxPriority.size() >= 1) {
+					minPriority.offer(maxPriority.poll());
+					maxPriority.offer(minPriority.poll());
+				}
+			}
+		}
 	}
 
 
