@@ -1,11 +1,6 @@
 package com.zts.slidingWindow;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 import com.alibaba.fastjson.JSON;
 
@@ -52,80 +47,43 @@ public class Main {
 	 * @return
 	 */
 	public double[] medianSlidingWindow(int[] nums, int k) {
-		List<Double> result = new ArrayList<>();
-		int left = 0, right = 0;
-		PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
-		PriorityQueue<Integer> maxPriorityQueue = new PriorityQueue<>(((o1, o2) -> o2 - o1));
-		if (k == 1) {
-			return Arrays.stream(nums).mapToDouble(Double::valueOf).toArray();
-		}
-		for (; right < nums.length; right++) {
-			maxPriorityQueue.offer(nums[right]);
-			swap(maxPriorityQueue, priorityQueue);
-			while (priorityQueue.size() + maxPriorityQueue.size() > k) {
-				if (priorityQueue.size() < maxPriorityQueue.size()) {
-					if (priorityQueue.contains(nums[left])) {
-						priorityQueue.remove(nums[left]);
-					} else {
-						if (maxPriorityQueue.contains(nums[left])) {
-							maxPriorityQueue.remove(nums[left]);
-						}
-					}
-				} else {
-					if (priorityQueue.contains(nums[left])) {
-						priorityQueue.remove(nums[left]);
-					} else {
-						if (!maxPriorityQueue.contains(nums[left])) {
-							maxPriorityQueue.remove(nums[left]);
-						}
-					}
-				}
-				swap(maxPriorityQueue, priorityQueue);
-				left++;
+		int n = nums.length;
+		int cnt = n - k + 1;
+		double[] ans = new double[cnt];
+		// 如果是奇数滑动窗口，让 right 的数量比 left 多一个
+		PriorityQueue<Integer> left  = new PriorityQueue<>((a,b)->Integer.compare(b,a)); // 滑动窗口的左半部分
+		PriorityQueue<Integer> right = new PriorityQueue<>((a,b)->Integer.compare(a,b)); // 滑动窗口的右半部分
+		for (int i = 0; i < k; i++) right.add(nums[i]);
+		for (int i = 0; i < k / 2; i++) left.add(right.poll());
+		ans[0] = getMid(left, right);
+		for (int i = k; i < n; i++) {
+			// 人为确保了 right 会比 left 多，因此，删除和添加都与 right 比较（left 可能为空）
+			int add = nums[i], del = nums[i - k];
+			if (add >= right.peek()) {
+				right.add(add);
+			} else {
+				left.add(add);
 			}
-			//-2147483648.0,-2147483648.0,-2147483648.0,-2147483648.0,-2147483648.0,2147483647.0,2147483647.0,2147483647.0,2147483647.0,2147483647.0,-2147483648.0
-			if (priorityQueue.size() + maxPriorityQueue.size() == k) {
-				// 偶数
-				if (k % 2 == 0) {
-					if ((int)maxPriorityQueue.peek() == (int)priorityQueue.peek()) {
-						result.add(Double.valueOf(priorityQueue.peek()));
-					} else {
-						long i = (long) maxPriorityQueue.peek() + priorityQueue.peek();
-						result.add(i * 1.0 / 2);
-					}
-				} else {
-					if (maxPriorityQueue.size() > priorityQueue.size()) {
-						result.add(Double.valueOf(maxPriorityQueue.peek()));
-					} else {
-						result.add(Double.valueOf(priorityQueue.peek()));
-					}
-				}
+			if (del >= right.peek()) {
+				right.remove(del);
+			} else {
+				left.remove(del);
 			}
+			adjust(left, right);
+			ans[i - k + 1] = getMid(left, right);
 		}
-		return result.stream().mapToDouble(Double::doubleValue).toArray();
+		return ans;
+	}
+	void adjust(PriorityQueue<Integer> left, PriorityQueue<Integer> right) {
+		while (left.size() > right.size()) right.add(left.poll());
+		while (right.size() - left.size() > 1) left.add(right.poll());
 	}
 
-
-	private void swap(PriorityQueue<Integer> maxPriority, PriorityQueue<Integer> minPriority) {
-		// 保证元素minPriority.size < maxPriority;
-		if (maxPriority.size() == minPriority.size()) return;
-		// 如果是那个大的，就进行对应的处理。
-		else if (maxPriority.size() < minPriority.size()) {
-			if (minPriority.size() - maxPriority.size() > 0) {
-				maxPriority.offer(minPriority.poll());
-				if (minPriority.size() >= 1) {
-					maxPriority.offer(minPriority.poll());
-					minPriority.offer(maxPriority.poll());
-				}
-			}
+	double getMid(PriorityQueue<Integer> left, PriorityQueue<Integer> right) {
+		if (left.size() == right.size()) {
+			return (left.peek() / 2.0) + (right.peek() / 2.0);
 		} else {
-			if (maxPriority.size() - minPriority.size() > 0) {
-				minPriority.offer(maxPriority.poll());
-				if (maxPriority.size() >= 1) {
-					minPriority.offer(maxPriority.poll());
-					maxPriority.offer(minPriority.poll());
-				}
-			}
+			return right.peek() * 1.0;
 		}
 	}
 
