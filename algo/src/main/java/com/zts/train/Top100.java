@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
+import com.zts.model.TreeNode;
 
 /**
  * @author zts
@@ -17,7 +17,105 @@ public class Top100 {
 
 	public static void main(String[] args) {
 		Top100 top100 = new Top100();
-		System.out.println(JSON.toJSONString(top100.partitionLabels("ababcbacadefegdehijhklij")));
+//		System.out.println(JSON.toJSONString(top100.partitionLabels("ababcbacadefegdehijhklij")));
+//		BuilderTree builderTree = new BuilderTree();
+//		TreeNode treeNode = builderTree.buildTree(new Integer[] {1, 2, 3, 4, 5});
+//		System.out.println(top100.diameterOfBinaryTree(treeNode));
+
+//		System.out.println(JSON.toJSONString(top100.productExceptSelf(new int[]{1, 2, 3, 4})));
+//		System.out.println(JSON.toJSONString(top100.productExceptSelf(new int[]{-1,1,0,-3,3})));
+//		System.out.println(top100.firstMissingPositive(new int[]{1, 2, 0}));
+//		System.out.println(top100.firstMissingPositive(new int[]{0, 1, 1, 2, 2}));
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/first-missing-positive/?envType=study-plan-v2&envId=top-100-liked
+	 * @param nums
+	 * @return
+	 */
+	public int firstMissingPositive(int[] nums) {
+		Arrays.sort(nums);
+		int current = 1;
+		int right = 0;
+		while (right < nums.length) {
+			if (nums[right] <= 0) {
+				right++;
+				continue;
+			}
+			if (nums[right] != current) {
+				return current;
+			}
+			// 进行处理
+			right++;
+			while (right < nums.length && nums[right] == current) {
+				right++;
+			}
+			current++;
+		}
+		return current;
+
+	}
+
+	/**
+	 * https://leetcode.cn/problems/product-of-array-except-self/?envType=study-plan-v2&envId=top-100-liked
+	 * @param nums
+	 * @return
+	 */
+	public int[] productExceptSelf(int[] nums) {
+		int ans = 1;
+		int[] result = new int[nums.length ];
+		int[] preSum = new int[nums.length + 1];
+		int[] suffixSum = new int[nums.length + 1];
+		for (int i = 0; i < nums.length; i++) {
+			ans = ans * nums[i];
+			preSum[i + 1] = ans;
+		}
+		preSum[0] = 1;
+		ans = 1;
+		suffixSum[nums.length] = 1;
+		for (int i = nums.length - 1; i >= 0; i--) {
+			ans = ans * nums[i];
+			suffixSum[i] = ans;
+		}
+		for (int i = 0; i < nums.length; i++) {
+			result[i] = preSum[i] * suffixSum[i + 1];
+		}
+		return result;
+	}
+
+
+	/**
+	 * https://leetcode.cn/problems/diameter-of-binary-tree/?envType=study-plan-v2&envId=top-100-liked
+	 * @param root
+	 * @return
+	 */
+	int maxTreeLenght =0;
+	public int diameterOfBinaryTree(TreeNode root) {
+		maxTreeLenght = 0;
+		maxLength(root);
+		return maxTreeLenght;
+	}
+
+	public int maxLength(TreeNode root){
+		if(root == null){
+			return 0;
+		}
+
+		// 左边高度
+		int maxLeftResult = maxLength(root.left);
+		// 右边高度。
+		int maxRightResult = maxLength(root.right);
+		// 当前节点的最长路径是多少，进行更新。
+		int max = 0;
+		if (root.left != null) {
+			max = max + maxLeftResult;
+		}
+		if (root.right != null) {
+			max = max + maxRightResult;
+		}
+		maxTreeLenght = Math.max(maxTreeLenght, max);
+		return Math.max(maxLeftResult, maxRightResult) + 1;
 	}
 
 	/**
