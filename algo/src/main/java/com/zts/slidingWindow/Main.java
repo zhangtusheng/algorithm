@@ -1,8 +1,9 @@
 package com.zts.slidingWindow;
 
-import java.util.*;
-
-import com.alibaba.fastjson.JSON;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 /**
  * @author zts
@@ -23,7 +24,7 @@ public class Main {
 //		System.out.println(main.longestSubstring("a", 1));
 //		System.out.println(main.characterReplacement("ABAB", 2));
 //		System.out.println(main.findMaxConsecutiveOnes(new int[]{1, 0, 1, 1, 0}));
-		System.out.println(JSON.toJSONString(main.medianSlidingWindow(new int[]{1, 3, -1, -3, 5, 3, 6, 7}, 3)));
+//		System.out.println(JSON.toJSONString(main.medianSlidingWindow(new int[]{1, 3, -1, -3, 5, 3, 6, 7}, 3)));
 //		System.out.println(JSON.toJSONString(main.medianSlidingWindow(new int[]{
 //				-2147483648,-2147483648,
 //				2147483647,
@@ -37,7 +38,94 @@ public class Main {
 //				-2147483648,
 //				2147483647,
 //				-2147483648}, 3)));
+		System.out.println(main.checkInclusion("ab", "eidbaooo"));
+		System.out.println(main.checkInclusion("ab", "eidboaoo"));
 	}
+
+
+	/**
+	 * https://leetcode.cn/problems/maximum-length-of-repeated-subarray/
+	 * @param nums1
+	 * @param nums2
+	 * @return
+	 */
+//	public int findLength(int[] nums1, int[] nums2) {
+//		int m = nums1.length, n = nums2.length;
+//		int left = 0, right = 0;
+//		int ans = 0;
+//		for (int i = 0; i < ; i++) {
+//
+//		}
+//		return ans;
+//	}
+
+
+	/**
+	 * https://leetcode.cn/problems/maximum-average-subarray-i/
+	 * @param nums
+	 * @param k
+	 * @return
+	 */
+	public double findMaxAverage(int[] nums, int k) {
+		int sum = 0;
+		int left = 0, right = 0;
+		Double max = (double) Integer.MIN_VALUE;
+		int n = nums.length;
+		while (right < n) {
+			sum+= nums[right];
+			if (right - left + 1 == k) {
+				// 计算当前的平均值。
+				double avg = sum * 1.0d / k;
+				max = Math.max(max, avg);
+				sum -= nums[left];
+				left++;
+			}
+			right++;
+		}
+		return max;
+	}
+
+	/**
+	 * https://leetcode.cn/problems/permutation-in-string/
+	 * @param s1
+	 * @param s2
+	 * @return
+	 */
+	public boolean checkInclusion(String s1, String s2) {
+		int left = 0, right = 0;
+		int k = s1.length();
+		int n = s2.length();
+		// 直接统计区间内元素的数量是否相等就好了。
+		int[] windows = new int[26];
+		char[] charArray = s1.toCharArray();
+		for (int i = 0; i < k; i++) {
+			windows[charArray[i] - 'a']++;
+		}
+		boolean flag = true;
+		int[] s2Count = new int[26];
+		char[] charArray1 = s2.toCharArray();
+		while (right < n) {
+			// 如果长度为k的话，计算是否相等，如果相等就直接返回就好了。
+			s2Count[charArray1[right] -'a'] ++;
+			if (right - left + 1 == k) {
+				flag = true;
+				for (int i = 0; i < 26; i++) {
+					if (windows[i] != s2Count[i]) {
+						flag = false;
+						break;
+					}
+				}
+				if (flag) {
+					return true;
+				}
+				s2Count[charArray1[left] - 'a']--;
+				left++;
+			}
+			right++;
+		}
+		return false;
+	}
+
 
 	/**
 	 * https://leetcode.cn/problems/sliding-window-median/
