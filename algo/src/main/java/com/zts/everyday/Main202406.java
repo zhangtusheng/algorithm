@@ -27,8 +27,38 @@ public class Main202406 {
 //        System.out.println(main202406.minimumSteps("110"));
 //        System.out.println(main202406.minimumSteps("001"));
 //        System.out.println(main202406.minimumSteps("101"));
-        System.out.println(main202406.maxOperations1(new int[]{3, 2, 1, 2, 3, 4}));
+//        System.out.println(main202406.maxOperations1(new int[]{3, 2, 1, 2, 3, 4}));
+//        System.out.println(main202406.subarraySum(new int[]{1, 1, 1}, 2));
+//        System.out.println(main202406.subarraySum(new int[]{1, 2, 3}, 3));
+        System.out.println(main202406.subarraySum(new int[]{-1, -1, 1}, 0));
     }
+
+    /**
+     * https://leetcode.cn/problems/subarray-sum-equals-k/description/
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int subarraySum(int[] nums, int k) {
+        int[] sumArray = new int[nums.length];
+        int sum = 0;
+        int ans = 0;
+        for (int i = 0; i < nums.length; i++) {
+            sum = sum + nums[i];
+            sumArray[i] = sum;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i; j < nums.length; j++) {
+                int t = sumArray[j] - sumArray[i] + nums[i];
+                if (t == k) {
+                    ans++;
+                }
+            }
+        }
+        return ans;
+    }
+
+
 
     /**
      * https://leetcode.cn/problems/maximum-number-of-operations-with-the-same-score-ii/?envType=daily-question&envId=2024-06-08
