@@ -1,9 +1,6 @@
 package com.zts.everyday;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 import com.zts.model.TreeNode;
 
@@ -35,25 +32,22 @@ public class Main202406 {
 
     /**
      * https://leetcode.cn/problems/subarray-sum-equals-k/description/
-     * @param nums
+     * @param nums: 将两个变量的变成一个变量来进行计算，然后统计他们的和就好了
      * @param k
      * @return
      */
     public int subarraySum(int[] nums, int k) {
-        int[] sumArray = new int[nums.length];
-        int sum = 0;
-        int ans = 0;
-        for (int i = 0; i < nums.length; i++) {
-            sum = sum + nums[i];
-            sumArray[i] = sum;
+        int n = nums.length;
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + nums[i];
         }
-        for (int i = 0; i < nums.length; i++) {
-            for (int j = i; j < nums.length; j++) {
-                int t = sumArray[j] - sumArray[i] + nums[i];
-                if (t == k) {
-                    ans++;
-                }
-            }
+
+        int ans = 0;
+        Map<Integer, Integer> cnt = new HashMap<>(n + 1); // 设置容量可以快 2ms
+        for (int sj : s) {
+            ans += cnt.getOrDefault(sj - k, 0);
+            cnt.merge(sj, 1, Integer::sum);
         }
         return ans;
     }
