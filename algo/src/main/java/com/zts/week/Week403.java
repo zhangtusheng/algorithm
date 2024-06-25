@@ -28,17 +28,85 @@ public class Week403 {
      * @return
      */
     public int minimumSum(int[][] grid) {
-        // 如果两个矩形有相交的，就需要进行拆分。
-        boolean[][] visited = new boolean[grid.length][grid[0].length];
-        int ans = 0;
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[0].length; j++) {
-                if (grid[i][j] == 1) {
+        // 思路就是穷举线的开始节点。
+        return Math.min(f(grid), f(rotate(grid)));
+    }
 
+    private int f(int[][] a) {
+        int ans = Integer.MAX_VALUE;
+        int m = a.length;
+        int n = a[0].length;
+        if (m >= 3) {
+            // 表示可以枚举两条横线
+            for (int i = 1; i < m; i++) {
+                for (int j = i+1; j < m; j++) {
+                    int area = minimumArea(a, 0, i, 0, n);
+                    area += minimumArea(a, i, j, 0, n);
+                    area += minimumArea(a, j, m, 0, n);
+                    ans = Math.min(ans, area);
                 }
             }
         }
-        return 0;
+        if (m >= 2 && n >= 2) {
+            for (int i = 1; i < m; i++) {
+                for (int j = 1; j < n; j++) {
+                    // 计算上面是长方形的湖，下面是竖着的长方形的。
+                    int area = minimumArea(a, 0, i, 0, n);
+                    area += minimumArea(a, i, m, 0, j);
+                    area += minimumArea(a, i, m, j, n);
+
+                    ans = Math.min(ans, area);
+
+                    area = minimumArea(a, i, m, 0, n);
+                    area += minimumArea(a, 0, i, 0, j);
+                    area += minimumArea(a, 0, i, j, n);
+                    ans = Math.min(ans, area);
+                }
+            }
+        }
+        return ans;
+    }
+
+
+    private int[][] rotate(int[][] a) {
+        int m = a.length;
+        int n = a[0].length;
+        int[][] b = new int[n][m];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                b[j][m - 1 - i] = a[i][j];
+            }
+        }
+        return b;
+    }
+
+
+
+    /**
+     * 求最小面积，当然这个面积是包含对应的1的面积。
+     * @param a
+     * @param u
+     * @param d
+     * @param l
+     * @param r
+     * @return
+     */
+    private int minimumArea(int[][] a, int u, int d, int l, int r) {
+        int left = a[0].length;
+        int right = 0;
+        int top = a.length;
+        int bottom = 0;
+        for (int i = u; i < d; i++) {
+            for (int j = l; j < r; j++) {
+                if (a[i][j] == 1) {
+                    left = Math.min(left, j);
+                    right = Math.max(right, j);
+                    top = Math.min(top, i);
+                    bottom = i;
+                }
+            }
+        }
+        return (right - left + 1) * (bottom - top + 1);
     }
 
     /**
