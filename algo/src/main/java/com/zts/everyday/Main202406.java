@@ -27,7 +27,82 @@ public class Main202406 {
 //        System.out.println(main202406.maxOperations1(new int[]{3, 2, 1, 2, 3, 4}));
 //        System.out.println(main202406.subarraySum(new int[]{1, 1, 1}, 2));
 //        System.out.println(main202406.subarraySum(new int[]{1, 2, 3}, 3));
-        System.out.println(main202406.subarraySum(new int[]{-1, -1, 1}, 0));
+//        System.out.println(main202406.subarraySum(new int[]{-1, -1, 1}, 0));
+//        System.out.println(main202406.checkSubarraySum(new int[]{23, 2, 4, 6, 7}, 6));
+//        System.out.println(main202406.checkSubarraySum(new int[]{23,2,6,4,7}, 13));
+//        System.out.println(main202406.checkSubarraySum(new int[]{23, 2, 4, 6, 6}, 7));
+//        System.out.println(main202406.checkSubarraySum(new int[]{5, 0, 0, 0}, 3));
+//        System.out.println(main202406.checkSubarraySum(new int[]{1, 0}, 2));
+        System.out.println(main202406.numOfSubarrays(new int[]{1, 3, 5}));
+        System.out.println(main202406.numOfSubarrays(new int[]{2, 4, 6}));
+    }
+
+    /**
+     * https://leetcode.cn/problems/number-of-sub-arrays-with-odd-sum/
+     * @param arr
+     * @return
+     */
+    public int numOfSubarrays(int[] arr) {
+        int[] s = new int[arr.length + 1];
+        int n = arr.length;
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + arr[i];
+        }
+        int ans = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 1; i <= n; i++) {
+            // 判断当前是奇还是偶数
+            if (s[i] % 2 ==1) {
+                Integer orDefault = map.getOrDefault(0, 0);
+                if (orDefault != 0) {
+                    // 当前也是合法的。
+                    ans += orDefault + 1;
+                } else {
+                    ans++;
+                }
+            } else {
+                Integer orDefault = map.getOrDefault(1, 0);
+                if (orDefault != 0) {
+                    ans += orDefault;
+                }
+
+            }
+            ans = ans % (10^7 + 9);
+            map.merge(s[i] % 2, 1, Integer::sum);
+        }
+        return ans;
+    }
+
+
+    /**
+     * https://leetcode.cn/problems/continuous-subarray-sum/
+     * @param nums
+     * @param k
+     * @return
+     */
+    public boolean checkSubarraySum(int[] nums, int k) {
+        int[] s = new int[nums.length + 1];
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + nums[i];
+        }
+        Map<Integer, Integer> map = new HashMap<>();
+        boolean flag = false;
+        for (int i = 1;i<=n;i++) {
+            // 只要前面出现过这种操作，后续就不需要处理了。
+            int t = s[i] % k;
+            Integer orDefault = map.get(t);
+            if (orDefault == null && s[i] % k == 0 && i >1) {
+                flag = true;
+                break;
+            }
+            if (orDefault != null) {
+                flag =true;
+                break;
+            }
+            map.put(t, i);
+        }
+        return flag;
     }
 
     /**
