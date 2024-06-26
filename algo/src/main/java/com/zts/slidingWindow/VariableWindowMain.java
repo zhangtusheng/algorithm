@@ -23,9 +23,26 @@ public class VariableWindowMain {
 //		System.out.println(main.maxConsecutiveAnswers("TTFF", 2));
 //		System.out.println(main.maxConsecutiveAnswers("TFFT", 1));
 
-		System.out.println(main.longestSubarray(new int[]{2,4,7,2}, 5));
+//		System.out.println(main.longestSubarray(new int[]{2,4,7,2}, 5));
+//		System.out.println(main.longestNiceSubarray(new int[]{1, 3, 8, 48, 10}));
+//		System.out.println(main.longestNiceSubarray(new int[]{744437702,379056602,145555074,392756761,560864007,934981918,113312475,1090,16384,33,217313281,117883195,978927664}));
+//		System.out.println(main.longestNiceSubarray(new int[]{3,1,5,11,13}));
+		System.out.println(main.longestNiceSubarray(new int[]{135745088,609245787,16,2048,2097152}));
 
 	}
+
+	public int longestNiceSubarray(int[] nums) {
+		int ans = 0;
+		for (int left = 0, right = 0, or = 0; right < nums.length; right++) {
+			while ((or & nums[right]) > 0) // 有交集
+				or ^= nums[left++]; // 从 or 中去掉集合 nums[left]
+			or |= nums[right]; // 把集合 nums[right] 并入 or 中
+			ans = Math.max(ans, right - left + 1);
+		}
+		return ans;
+	}
+
+
 
 	/**
 	 * https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/
