@@ -31,6 +31,11 @@ public class VariableWindowMain {
 
 	}
 
+	/**
+	 * https://leetcode.cn/problems/longest-nice-subarray/description/
+	 * @param nums
+	 * @return
+	 */
 	public int longestNiceSubarray(int[] nums) {
 		int ans = 0;
 		for (int left = 0, right = 0, or = 0; right < nums.length; right++) {
