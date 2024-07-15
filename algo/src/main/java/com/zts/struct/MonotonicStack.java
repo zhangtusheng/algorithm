@@ -3,7 +3,6 @@ package com.zts.struct;
 import java.util.Arrays;
 import java.util.Stack;
 
-import com.alibaba.fastjson.JSON;
 import com.zts.model.ListNode;
 
 /**
@@ -128,7 +127,6 @@ public class MonotonicStack {
 		int[] result = Arrays.copyOf(ans, n);
 		return result;
 	}
-
 
 	/**
 	 * https://leetcode.cn/problems/final-prices-with-a-special-discount-in-a-shop/
