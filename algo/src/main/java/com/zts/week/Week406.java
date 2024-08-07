@@ -26,7 +26,6 @@ public class Week406 {
             listNode.next = head.next;
             head.next = listNode;
         }
-        System.out.println(JSON.toJSONString(week406.modifiedList(new int[]{1, 2, 3}, head.next)));
     }
 
 
